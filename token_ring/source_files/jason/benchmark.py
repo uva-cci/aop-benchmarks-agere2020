@@ -5,10 +5,7 @@ import time
 
 import glob, os
 
-# jason should be in the path: e.g.
-#
-# export JASON_HOME=$HOME/opt/jason
-# export PATH=$JASON_HOME/scripts:$PATH
+JASON_PATH = "/Users/giovanni/opt/jason/scripts"
 
 def make_dir(path):
 	if not os.path.isdir(path):
@@ -16,7 +13,6 @@ def make_dir(path):
 			os.mkdir(path)
 		except OSError:
 			raise RuntimeError("Creation of the directory %s failed" % path)
-
 
 def generate_meta(nbagents, nbtokens):
 	os.chdir("./")
@@ -42,7 +38,7 @@ def run_test(filename):
 	else: 
 		start = time.time_ns()
 		psutil.cpu_percent(interval=0, percpu=True)
-		subprocess.run(["/Users/giovanni/opt/jason/scripts/jason", filename])
+		subprocess.run([JASON_PATH+"/jason", filename])
 		print(psutil.cpu_percent(interval=0, percpu=True))
 		end = time.time_ns()
 		print ((end - start) / (10 ** 9 ))
