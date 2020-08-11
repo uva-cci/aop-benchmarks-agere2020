@@ -1,0 +1,31 @@
+package token_ring;
+
+agent Main {
+      module System system;
+      module Console C;
+      module Math M;
+      module Prelude prelude;
+      
+      	types p {
+		formula startMessage(int,int);
+		}
+      
+     
+      
+      rule +!main(list args) {
+      
+      string tokens = prelude.valueAsString(args, 0);
+      string agents = prelude.valueAsString(args, 1);
+      
+      
+      system.createAgent("master", "token_ring.Master");
+          int X = 1;
+          while (X <= M.intValue(agents)) {
+              system.createAgent("thread"+X, "token_ring.Thread");
+              X = X + 1;
+          }
+            
+      C.println("starting master");
+      
+      send(inform,"master", startMessage(M.intValue(tokens),M.intValue(agents)));
+  }

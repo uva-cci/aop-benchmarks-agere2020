@@ -1,0 +1,32 @@
+package token_ring;
+
+
+
+agent Thread {
+   module Console console;
+	module System system;
+	module Timer timer;
+
+types p {
+		formula token(int);
+		formula neighbor(string);
+		formula master(string);
+	}
+
+
+    rule @message(inform, string sender, token(int Token))  : neighbor(string n) & master(string m) {
+    	  if(Token == 0)
+    	   {
+    	   //console.println(system.name() + " was done ");
+    	   	//console.println(m);
+    	   	send(inform, m, token(0));
+    	   	//timer.timeTaken();
+    	   }
+    	   else { send(inform, n, token(Token - 1)); } 
+      }
+      
+    rule @message(inform, string sender, neighbor(string n)) {
+    	  +neighbor(n);
+    	  +master(sender);
+      }
+ }
