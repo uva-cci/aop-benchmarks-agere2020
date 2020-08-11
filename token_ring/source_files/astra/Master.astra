@@ -1,89 +1,71 @@
 package token_ring;
 
-
-
 agent Master {
-   module Console console;
+  module Console console;
 
-	 module Prelude prelude;
-	 module Math math;
-	  module System system;
-	module Timer timer;
+  module Prelude prelude;
+  module Math math;
+  module System system;
+  module Timer timer;
 
-	types p {
-		formula token(int);
+  types p {
+    formula token(int);
 		formula neighbor(string);
 		formula done(int);
 		formula t_tokens(int);
 		formula startMessage(int,int);
 	}
 
-	
-	
-
-    rule +!init(int tokens,int threads) {
-    	
-    	+t_tokens(tokens);
-    	
-        console.println("starting");
-        
-        int N = prelude.size(system.getAgents());
-          while (N < threads+2) {
-              console.println("there are: " + N + " agents.");
-              system.sleep(1000);
-              N = prelude.size(system.getAgents());
-          }
-          
-          console.println(system.currentTimeMillis());
-          //timer.start();
-          console.println("there are : " + N + " agents.");
-   
-           int j = 1;
-           while (j <= threads) { 
-          	  int z = j + 1;
-			if(z > threads)
-				z = 1;
-			string n = "thread" + z;
-			
-			string address = "thread" + j;
-	              send(inform, address, neighbor(n));             
-	          
-			j++;
-          }
-          
-
-          j = 1;
-          
-          while (j <= tokens) {
-          	
-          	int w = timer.calc_worker(j,threads,tokens);
-          	string address = "thread"+w;
-          	send(inform, address, token(50000));
-          	j++;
-          	
-          }
-
-        
-     }
-     
-     
-     rule @message(inform, string sender, startMessage(int tokens,int threads)) {
-     	!init(tokens,threads);
-     }
-     
-     rule @message(inform, string sender, token(int Token)) : t_tokens(int tokens){
-     		//console.println(" are done ");
-     	 
-     	  	timer.done();
-     	  
-     	  	console.println(timer.finished());
-     	  
-     	  	if(timer.finished() == tokens)
-     	  		system.exit();
-     	    
-    	  
-      }
+  rule +!init(int tokens, int threads) {
+  	
+  	+t_tokens(tokens);
+  	
+    console.println("starting");
+    int N = prelude.size(system.getAgents());
+    while (N < threads+2) {
+      console.println("there are: " + N + " agents.");
+      system.sleep(1000);
+      N = prelude.size(system.getAgents());
+    }
       
-     
-     
- }
+    console.println(system.currentTimeMillis());
+    //timer.start();
+    console.println("there are : " + N + " agents.");
+
+    int j = 1;
+    while (j <= threads) { 
+  	  int z = j + 1;
+  		if(z > threads)
+	   		z = 1;
+		  string n = "thread" + z;
+		  string address = "thread" + j;
+      send(inform, address, neighbor(n));             
+          
+		  j++;
+    }
+        
+    j = 1;
+    while (j <= tokens) {    	
+    	int w = timer.calc_worker(j,threads,tokens);
+    	string address = "thread"+w;
+    	send(inform, address, token(50000));  // TOKENS TO BE CONSUMED?
+    	j++;
+    } 
+  }
+   
+   
+  rule @message(inform, string sender, startMessage(int tokens,int threads)) {
+  	!init(tokens,threads);
+  }
+
+  rule @message(inform, string sender, token(int Token)) : t_tokens(int tokens) {
+	  //console.println(" are done ");
+ 
+  	timer.done();
+  
+  	console.println(timer.finished());
+  
+  	if(timer.finished() == tokens)
+  		system.exit();
+  }
+}
