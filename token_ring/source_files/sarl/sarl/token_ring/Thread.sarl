@@ -1,0 +1,45 @@
+package token_ring
+
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Logging
+import io.sarl.lang.core.Address
+
+/** 
+ * @author Stephane Galland
+ */
+agent Thread {
+
+	uses DefaultContextInteractions, Logging
+
+	var neighbor : Address = null
+	var master : Address = null
+	var init: int = 0;
+
+	on AddressMessage {
+		this.neighbor = occurrence.address
+		this.master = occurrence.source
+	}
+	
+	on Init {
+		init ++;
+	}
+	
+	on Start {
+		for (var i = 0; i < init; i++) {
+			emit(new Token(Config.nb_token_hops)) [it == neighbor]
+		}
+	}
+	
+	on Token {
+		if(occurrence.token == 0) {
+			emit(new ZeroToken())[it == master]
+			}
+		else
+			emit(new Token(occurrence.token-1))[it == neighbor]
+	}
+
+	on Ping {
+		emit(new Pong())[it == occurrence.source]
+	}
+
+}

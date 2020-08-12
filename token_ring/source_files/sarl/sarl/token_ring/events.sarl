@@ -1,0 +1,63 @@
+package token_ring
+
+import io.sarl.lang.core.Address
+
+
+event Ping {
+
+
+	new () {
+	}
+
+}
+
+
+event Pong {
+
+	new () {
+	}
+
+}
+
+event ZeroToken {
+
+	new () {
+	}
+
+}
+
+event AddressMessage {
+
+	val address : Address
+
+	new (a : Address) {
+		address = a
+	}
+
+}
+
+event Token {
+
+	val token : int
+
+	new (t : int) {
+		token = t
+	}
+
+}
+
+event Init {
+
+	
+
+	new () {
+	}
+
+}
+
+event Start {
+
+	new () {
+	}
+
+}
