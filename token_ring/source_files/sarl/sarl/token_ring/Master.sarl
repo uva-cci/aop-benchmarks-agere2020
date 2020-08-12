@@ -1,0 +1,74 @@
+package token_ring
+
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import io.sarl.core.Schedules
+import io.sarl.core.Logging
+import io.sarl.core.Lifecycle
+import io.sarl.lang.core.Address
+
+
+agent Master {
+
+	uses DefaultContextInteractions, Schedules, Logging
+
+	var last : Address = null
+	var addresses : int = 0
+	val nb_tokens : int = Config.nb_tokens;
+	val nb_agents : int = Config.nb_agents;
+	val nb_hops : int = Config.nb_agents;
+	var done_tokens : int = 0;
+	var c_token: int = 1;
+
+	val lock = new Object
+	val done_lock = new Object
+
+	on Pong {
+		synchronized (lock) {
+		if (this.last === null)
+			emit(new Ping())[it == occurrence.source]
+		else {
+			emit(new AddressMessage(last))[it == occurrence.source]
+			
+			this.addresses++
+			if(addresses == Math.ceil(c_token * (nb_agents/nb_tokens))) {
+				emit(new Init())[it == occurrence.source]
+				c_token++
+			} 
+			
+		}
+		last = occurrence.source
+		
+		if (addresses == nb_agents)
+		{
+			info("starting")
+			emit(new Start())
+		}
+	}
+		
+	}
+
+	on Initialize {
+		info("Waiting for Threads...")
+		val taskVar = task("waiting")
+		
+		taskVar.every(1000) [
+			if (defaultSpace.numberOfStrongParticipants > nb_agents) {
+				info("time:" + System.currentTimeMillis())
+				emit(new Ping())
+				taskVar.cancel
+			}
+		]
+	}
+	
+	on ZeroToken {
+	synchronized (done_lock) {
+		done_tokens++
+		if(done_tokens == nb_tokens){
+			info(done_tokens + " were completed")
+			info("time:"+System.currentTimeMillis);
+		}	
+		}
+	}
+
+}

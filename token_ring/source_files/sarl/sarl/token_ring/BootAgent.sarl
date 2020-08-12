@@ -1,0 +1,24 @@
+package token_ring
+
+
+
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+import io.sarl.core.Logging
+
+
+agent BootAgent {
+
+	uses Lifecycle, Logging
+
+	on Initialize {
+		
+		
+		for (var i = 0; i < Config.nb_agents; i++) {
+			spawn(Thread)
+		}
+		spawn(Master)
+		killMe
+	}
+
+}
