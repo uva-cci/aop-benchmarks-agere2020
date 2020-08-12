@@ -7,29 +7,27 @@ import glob, os, shutil
 
 import re
 
-JASON_PATH = "/Users/giovanni/opt/jason/scripts"
-# JASON_PATH = "/home/mostafa/jason/scripts"
+# JASON_PATH = "/Users/giovanni/opt/jason/scripts"
+JASON_PATH = "/home/mostafa/jason/scripts"
 
 def remove_dir(path):
-	if not os.path.isdir(path):
+	if os.path.isdir(path):
 		try:
 			shutil.rmtree(path)
 		except OSError as e:
-			print("Error: %s : %s" % (path, e.strerror))
-
+			raise RuntimeError("error in removing directory: %s -- %s" % (path, e.strerror))
 
 def make_dir(path):
 	if not os.path.isdir(path):
 		try:
 			os.mkdir(path)
-		except OSError:
-			raise RuntimeError("Creation of the directory %s failed" % path)
+		except OSError as e:
+			raise RuntimeError("error in creating directory: %s -- %s" % (path, e.strerror))
 
 def generate_meta(nbagents, nbtokens, nbconsumptions, clean=True):
 
 	print("generating test: Workers: %s, Tokens: %s, Consumptions: %s" % (nbagents, nbtokens, nbconsumptions))
 
-	os.chdir("./")
 	path = "W%s_T%s_C%s" % (nbagents, nbtokens, nbconsumptions)
 
 	if clean:
@@ -52,9 +50,7 @@ def generate_meta(nbagents, nbtokens, nbconsumptions, clean=True):
 		fout.close()
 
 
-def run_test(path, filename, clean=True):
-	if clean:
-		remove_dir(path)
+def run_test(path, filename):
 
 	if not filename.endswith(".mas2j"):
 		raise RuntimeError("wrong filename: %s" % filename)
@@ -93,24 +89,21 @@ def run_test(path, filename, clean=True):
 
 	return (cpu_data, total_time, internal_time)
 
-# nbagents = 2
-# nbtokens = 10
-# nbconsumptions = 5000
-# generate_meta(nbagents, nbtokens, nbconsumptions)
-# run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbconsumptions)), "threadring_with_distributor.mas2j")
+
 
 evaluation_file = open("benchmark.csv", "w")
+evaluation_file.write("nbagents;nbtokens;nbconsumptions;cpudata;total_time;internal_time\n")
 
-for i in range(1, 9, 1):
-	nbagents = 2**i
-	for j in range(1, 9, 1):
-		nbtokens = 2 ** j
-		for z in range (1, 9, 1):
-			nbconsumptions = 2 ** z
+for i in range(1, 10, 6): # iterating over numbers of agents
+	nbagents = 10**i
+	for j in range(0, 10, 6): # iterating over numbers of tokens
+		nbtokens = 10 ** j
+		for z in range(0, 10, 6): # iterating over numbers of consumptions
+			nbconsumptions = 10 ** z
 
-			generate_meta(nbagents, nbtokens, nbconsumptions)
-			cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbconsumptions)), "threadring_with_distributor.mas2j")
-
-			evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbconsumptions) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+			for w in range (1, 10): # 10 executions to compute average and std_deviation
+				generate_meta(nbagents, nbtokens, nbconsumptions)
+				cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbconsumptions)), "threadring_with_distributor.mas2j")
+				evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbconsumptions) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 
 evaluation_file.close()
