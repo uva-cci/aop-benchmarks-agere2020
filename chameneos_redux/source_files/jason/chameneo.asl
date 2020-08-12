@@ -12,9 +12,9 @@
 nb_meetings(0).
 nb_meetings_same_color(0).
 
-+!go_mall : color(C) <- .send(broker,achieve,meet(C)).
++!go_mall : color(C) <- .send(broker, achieve, meet(C)).
    
-+!mutate(A,C2) : color(C1) & complement(C1,C2,C) & nb_meetings(N)
++!mutate(A,C2) : color(C1) & complement(C1, C2, C) & nb_meetings(N)
    <- -+nb_meetings(N+1);
       //.println("Meet a chameneo with color ",C2,", then changing my color from ",C1," to ",C);
       .abolish(color(_));
