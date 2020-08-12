@@ -89,19 +89,19 @@ def run_test(path, filename):
 
 	return (cpu_data, total_time, internal_time)
 
-
+# ------------ main
 
 evaluation_file = open("benchmark.csv", "w")
 evaluation_file.write("nbagents;nbtokens;nbconsumptions;cpudata;total_time;internal_time\n")
 
-for i in range(1, 10, 6): # iterating over numbers of agents
+for i in range(1, 3, 1): # iterating over numbers of agents
 	nbagents = 10**i
-	for j in range(0, 10, 6): # iterating over numbers of tokens
+	for j in range(0, 3, 1): # iterating over numbers of tokens
 		nbtokens = 10 ** j
-		for z in range(0, 10, 6): # iterating over numbers of consumptions
+		for z in range(0, 3, 1): # iterating over numbers of consumptions
 			nbconsumptions = 10 ** z
 
-			for w in range (1, 10): # 10 executions to compute average and std_deviation
+			for w in range (2): # 10 executions to compute average and std_deviation
 				generate_meta(nbagents, nbtokens, nbconsumptions)
 				cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbconsumptions)), "threadring_with_distributor.mas2j")
 				evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbconsumptions) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
