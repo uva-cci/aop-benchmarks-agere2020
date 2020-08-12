@@ -35,6 +35,8 @@ def generate_meta(nbagents, nbtokens, nbconsumptions, clean=True):
 
 	make_dir(path)
 
+	shutil.copyfile("./logging.properties", path+"/logging.properties")
+
 	asl_files = glob.glob("*.asl.meta")
 	mas2j_files = glob.glob("*.mas2j.meta")
 
