@@ -1,11 +1,16 @@
-agents(500).
-tokens(250).
-token_value(50000).
+// parameters --
+// number of tokens: 1
+// number of agents: 10
+// number of consumptions: 1
+
+agents(10).
+tokens(1).
+token_value(1).
 
 !init.
 
 +!init : agents(W) && tokens(T) && token_value(V) =>
-    #println("start at:");
+    #print("start at: ");
     #println(#System.currentTimeMillis());
     +not_done(T);
     for(I in between(1,T,I)) {
@@ -17,7 +22,7 @@ token_value(50000).
 @atomic
 +!done : not_done(T) =>
     if(T == 1) {
-        #println("done at:");
+        #print("done at: ");
         #println(#System.currentTimeMillis());
         #std.coms.exit();
     };

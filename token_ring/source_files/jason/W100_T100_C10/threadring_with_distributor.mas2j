@@ -1,0 +1,9 @@
+// parameters --
+// number of agents: 100 
+
+MAS threadring_with_distributor {
+    infrastructure: Centralised(pool, 8)
+    agents:
+        thread_with_distributor [verbose=0] #100;
+        distributor [verbose=0] #1;
+}
