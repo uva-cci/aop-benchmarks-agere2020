@@ -2,7 +2,7 @@
 // number of agents: __NBAGENTS__ 
 
 +!token(0) <- 
-	.printf("finished"); .send("distributor", achieve, finished).
+	.send("distributor", achieve, finished).
 
 +!token(T) : next(X) <- 
 	.send(X, achieve, token(T-1)).
@@ -15,6 +15,4 @@
 	+next(X);
 	.send(X, achieve, token(T-1)).
 
-+!token(N) : not next(F) <- 
-	.printf("Unexpected error.").
 
