@@ -1,0 +1,32 @@
+package chameneos;
+
+agent Main {
+      module System system;
+      module Console C;
+      module Math M;
+      module Prelude prelude;
+      
+      	types p {
+		formula startMessage(int,int);
+		}
+      
+     
+      
+      rule +!main(list args) {
+      
+      string meetings = prelude.valueAsString(args, 0);
+      string chameneos = prelude.valueAsString(args, 1);
+      
+      //workaround for the message service bug!
+      send(inform,"main", startMessage(0,0));
+      
+      system.createAgent("broker", "chameneos.Broker");
+          int X = 1;
+          while (X <= M.intValue(chameneos)) {
+              system.createAgent("chameneos"+X, "chameneos.Chameneos");
+              X = X + 1;
+          }
+            
+      
+      send(inform,"broker", startMessage(M.intValue(meetings),M.intValue(chameneos)));
+  }

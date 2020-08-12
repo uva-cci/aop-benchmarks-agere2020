@@ -1,4 +1,4 @@
-package token_ring;
+package chameneos;
 
 
 import astra.core.Module;
@@ -12,6 +12,10 @@ public class Timer extends Module {
 	
 	public int finished = 0;
 	
+	@ACTION public boolean time() {
+		System.out.println("time:" + System.currentTimeMillis());
+		return true;
+	}
 	
 	@ACTION public boolean start() {
 		Timer.INSTANCE.startTime = System.currentTimeMillis();
@@ -28,19 +32,10 @@ public class Timer extends Module {
 		return true;
 	}
 	
-	@TERM
-	   public int calc_worker(int I , int W, int T) {
-		return Math.round(I * ( W / T ));
-	   }
 	
 	@TERM
-	   public int finished() {
+	public int finished() {
 		return this.INSTANCE.finished;
-	   }
-	
-	@ACTION public boolean time() {
-		System.out.println("time:" + System.currentTimeMillis());
-		return true;
 	}
 	
 	

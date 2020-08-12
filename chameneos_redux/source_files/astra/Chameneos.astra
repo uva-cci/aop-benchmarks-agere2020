@@ -1,0 +1,95 @@
+package chameneos;
+
+
+
+agent Chameneos {
+   module Console console;
+	module System system;
+	module Timer timer;
+    module ColorUtils colors;
+
+
+
+
+
+types p {
+		formula color(string);
+		formula ready();
+		formula go_mall();
+		formula meet(string);
+		formula mutate(string,string);
+		formula complement(string,string,string);
+		formula meetings(int);
+		formula meetings_with_self(int);
+		formula print_result();
+		formula done();
+	}
+	
+	
+
+	initial complement("blue",   "red",    "yellow"),
+			complement("blue",   "yellow", "red"),
+			complement("red",    "blue",   "yellow"),
+			complement("red",    "yellow", "blue"),
+			complement("yellow", "blue",   "red"),
+			complement("yellow", "red",    "blue"),
+			complement("blue", "blue",    "blue"),
+			complement("red", "red",    "red"),
+			complement("yellow", "yellow",    "yellow"),
+			meetings(0),meetings_with_self(0);
+
+	/*
+	+!set_and_print_color =>
+    C = #chams.ChameneosData.color(#myName.replaceAll("cham","").toInt);
+    #println(C);
+    #achieve("broker1",ready);
+    +color(C).
+	*/
+
+
+ 	rule @message(inform, string sender, ready()) {
+ 		string color = colors.calc_worker(system.name());
+ 		console.println("my color:" + color);
+ 		send(inform,"broker",ready());
+ 		+color(color);
+ 	}
+ 	
+ 	 	
+ 	/*
+ 		+!go_mall : color(C) => #achieve("broker1",meet(C)).
+ 	*/
+ 	
+ 	rule @message(inform, string sender, go_mall()) : color(string C) {
+ 		send(inform,"broker",meet(C));
+ 	}
+ 	
+ 	rule @message(inform, string sender, mutate(string A2,string C2)) : color(string C) & meetings(int M) & meetings_with_self(int SM) {
+ 		
+ 		
+ 		query(complement(C,C2,string NC));
+ 		
+ 		-color(C);
+ 		+color(NC);
+ 		
+ 		-meetings(M);
+ 		+meetings(M+1);
+ 		
+ 		if(A2 == system.name()) {
+ 			-meetings_with_self(SM);
+ 			+meetings_with_self(SM+1);
+ 		}
+ 		 
+ 		
+ 		send(inform,"broker",meet(NC));
+ 	}
+ 	
+ 	
+ 	rule @message(inform, string sender, print_result()) :  meetings(int M) & meetings_with_self(int SM) {
+ 		console.println("meetings: " + M + ":: self meetings: " + SM);
+ 		send(inform,"broker",done());
+ 	}
+
+ }
+ 
+ 
+ 

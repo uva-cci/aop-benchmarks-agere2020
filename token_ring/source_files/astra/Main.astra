@@ -25,7 +25,6 @@ agent Main {
               X = X + 1;
           }
             
-      C.println("starting master");
       
       send(inform,"master", startMessage(M.intValue(tokens),M.intValue(agents)));
   }

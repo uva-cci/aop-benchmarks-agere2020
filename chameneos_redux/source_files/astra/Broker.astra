@@ -1,0 +1,161 @@
+package chameneos;
+
+
+
+agent Broker {
+   module Console console;
+
+	 module Prelude prelude;
+	 module Math math;
+	  module System system;
+	module Timer timer;
+
+	types p {
+		formula done(int);
+		formula nb_meetings(int);
+		formula nb_ready(int);
+		formula nb_chams(int);
+		formula startMessage(int,int);
+		formula go_mall();
+		formula ready();
+		formula meet(string);
+		formula first(string,string);
+		formula is_first(boolean);
+		formula mutate(string,string);
+		formula print_result();
+		formula finished(boolean);
+		formula done();
+	}
+	
+	
+
+	initial nb_ready(0),finished(false);
+	
+
+    rule +!init(int meetings,int chameneos) {
+    	
+    	+nb_meetings(meetings);
+    	+nb_chams(chameneos);
+    	+is_first(true);
+    	
+        console.println("hccasdasd222c .... ");
+        
+        int N = prelude.size(system.getAgents());
+        
+          while (N < chameneos+2) {
+              console.println("there are: " + N + " agents.");
+              system.sleep(1000);
+              N = prelude.size(system.getAgents());
+          }
+
+		 //console.println(system.currentTimeMillis());
+         timer.time();
+		
+        
+         int j = 1;
+	          	while (j <= chameneos) { 
+					string address = "chameneos" + j;
+		            send(inform, address, ready());             
+					j++;
+          		}
+  
+        
+     }
+     
+     
+     rule @message(inform, string sender, startMessage(int meetings,int chameneos)) {
+     	!init(meetings,chameneos);
+     }
+     
+     
+     /*
+     @atomic
+		+!ready : nb_ready(N) && nb_chams(N1) =>
+	    -nb_ready(N);
+	    +nb_ready(N + 1);
+	    if( (N + 1) == N1 )
+	    {
+	        #broadcast_achieve(go_mall);
+	    }
+    .
+     */
+     rule @message(inform, string sender, ready()) {
+     	
+     	synchronized (ct_tok) {
+            query(nb_ready(int N));
+            query(nb_chams(int N1));
+            +nb_ready(N+1);
+            -nb_ready(N);
+            if( (N + 1) == N1 ) {
+            	int j = 1;
+	          	while (j <= N1) { 
+					string address = "chameneos" + j;
+		            send(inform, address, go_mall());             
+					j++;
+          		}
+            }
+        }
+      }
+      
+      
+        rule @message(inform, string sender, meet(string C2)) {
+     	synchronized (meet_tok) {
+            query(is_first(boolean f));
+            
+            if(f == true) {
+            	query(nb_meetings(int I));
+            	if(I > 0) {
+            		-is_first(true);
+            		+is_first(false);
+            		+first(sender,C2);
+            	} 
+            	else {
+            		query(finished(boolean b));
+            		
+            		if( b == false ) {
+            			-finished(b);
+            			+finished(true);
+            			query(nb_chams(int N1));
+            			int j = 1;
+			          	while (j <= N1) { 
+							string address = "chameneos" + j;
+				            send(inform, address, print_result());             
+							j++;
+		          		}
+            		}
+            	}
+            } 
+				else 
+				{
+            	-is_first(false);
+            	+is_first(true);
+            	query(nb_meetings(int I));
+            	-nb_meetings(I);
+      			+nb_meetings(I - 1);
+            	query(first(string A1,string C1));
+      			-first(A1,C1);
+      			string A2 = sender;
+      			send(inform,A1,mutate(A2,C2));
+      			send(inform,A2,mutate(A1,C1));
+      			
+            }
+            
+           
+        }
+      }
+      
+       rule @message(inform, string sender, done()) {
+       	
+	     	synchronized (done_tok) {
+	     		query(nb_chams(int N));
+	     		-nb_chams(N);
+	     		+nb_chams(N-1);
+	     		if(N == 1) {
+	     			timer.time();
+	     			system.exit();
+	     		}		
+	     	}
+       }
+     
+     
+ }
