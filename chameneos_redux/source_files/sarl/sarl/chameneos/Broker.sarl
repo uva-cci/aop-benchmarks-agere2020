@@ -1,0 +1,88 @@
+package chameneos
+
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import io.sarl.core.Schedules
+import io.sarl.core.Logging
+import io.sarl.core.Lifecycle
+import io.sarl.lang.core.Address
+
+agent Broker {
+
+	uses DefaultContextInteractions, Schedules, Logging
+
+	var nb_meetings : int = Config.nb_meetings;
+	val nb_meetings_total : int = Config.nb_meetings;
+	val nb_agents : int = Config.nb_agents;
+
+	val lock = new Object
+	val meet_tok = new Object
+	val done_tok = new Object
+	var first : boolean = true
+	var firstObject : First = null;
+	var finished : boolean = false;
+	var n = 0;
+	var done = 0;
+
+	on Initialize {
+		info("Waiting for Threads...")
+		val taskVar = task("waiting")
+
+		taskVar.every(1000) [
+			if (defaultSpace.numberOfStrongParticipants > nb_agents) {
+				taskVar.cancel
+			}
+		]
+		info("time:" + System.currentTimeMillis);
+		emit(new Ping())
+	}
+
+	on Pong {
+		synchronized (lock) {
+			emit(new Id(n))[it == occurrence.source]
+			n++
+		}
+	}
+
+	on Meet {
+		synchronized (meet_tok) {
+
+			if (first) {
+				if (nb_meetings > 0) {
+					first = false;
+					firstObject = new First(occurrence.source, occurrence.color)
+				} else {
+
+					if (!finished) {
+						finished = true;
+						emit(new PrintResults())
+					}
+				}
+			} else {
+
+				first = true;
+				nb_meetings--;
+				emit(new Mutate(firstObject.address, firstObject.color))[it == occurrence.source]
+				emit(new Mutate(occurrence.source, occurrence.color))[it == firstObject.address]
+				firstObject = null
+
+			}
+
+		}
+	}
+
+	on Done {
+
+		synchronized (done_tok) {
+			done++;
+
+			if (done == nb_agents) {
+				info(nb_meetings_total + " meetings done");
+				info("time:" + System.currentTimeMillis);
+				val e = Config.exit();
+			}
+		}
+	}
+}
+
+

@@ -1,0 +1,103 @@
+package chameneos
+
+import io.sarl.lang.core.Address
+
+
+event Ping {
+
+
+	new () {
+	}
+
+}
+
+
+event Pong {
+
+	new () {
+	}
+
+}
+
+event ZeroToken {
+
+	new () {
+	}
+
+}
+
+event AddressMessage {
+
+	val address : Address
+
+	new (a : Address) {
+		address = a
+	}
+
+}
+
+event Token {
+
+	val token : int
+
+	new (t : int) {
+		token = t
+	}
+
+}
+
+event Init {
+
+
+	new () {
+	}
+
+}
+
+event Meet {
+	val color : String;
+
+	new (t : String) {
+		color = t
+	}
+}
+
+event Id {
+	val id : int;
+
+	new (t : int) {
+		id = t
+	}
+}
+
+
+event Mutate {
+	val color : String;
+	val address : Address
+
+	new (a: Address,t : String) {
+		color = t
+		address = a
+	}
+}
+
+event Start {
+
+	new () {
+	}
+
+}
+
+event Done {
+
+	new () {
+	}
+
+}
+
+event PrintResults {
+
+	new () {
+	}
+
+}

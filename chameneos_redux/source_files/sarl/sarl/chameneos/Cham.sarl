@@ -1,0 +1,58 @@
+package chameneos
+
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Logging
+import io.sarl.lang.core.Address
+
+
+agent Cham {
+
+	uses DefaultContextInteractions, Logging
+
+	
+	var master : Address = null
+	var color : String = "";
+	var mutations = 0;
+	var self_mutations = 0;
+	
+
+	on Init {
+	
+	}
+	
+	on Start {
+		
+	}
+	
+	on Token {
+		
+	}
+
+	on Ping {
+		this.master = occurrence.source
+		emit(new Pong()) [it == occurrence.source]
+	}
+	
+	on Id {		
+		color = ColorUtils.color(occurrence.id)
+		emit(new Meet(color)) [it == occurrence.source]
+	}
+	
+	on Mutate {
+		color = ColorUtils.mutate(color,occurrence.color)
+		mutations++
+		if(this.ID.toString.equals(occurrence.address.UUID.toString))
+			self_mutations++;
+			
+		emit(new Meet(color))[it == occurrence.source]
+	}
+	
+	on PrintResults {
+		info("meeting:"+mutations + " | self meetings:"+ self_mutations );
+		emit(new Done())
+	}
+	
+	
+	
+
+}
