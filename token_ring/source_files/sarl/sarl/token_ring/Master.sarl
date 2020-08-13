@@ -6,6 +6,7 @@ import io.sarl.core.Schedules
 import io.sarl.core.Logging
 import io.sarl.core.Lifecycle
 import io.sarl.lang.core.Address
+import token_ring.Config
 
 
 agent Master {
@@ -14,9 +15,8 @@ agent Master {
 
 	var last : Address = null
 	var addresses : int = 0
-	val nb_tokens : int = Config.nb_tokens;
-	val nb_agents : int = Config.nb_agents;
-	val nb_hops : int = Config.nb_agents;
+	val nb_tokens : double = Config.nb_tokens;
+	val nb_agents : double = Config.nb_agents;
 	var done_tokens : int = 0;
 	var c_token: int = 1;
 
@@ -29,12 +29,22 @@ agent Master {
 			emit(new Ping())[it == occurrence.source]
 		else {
 			emit(new AddressMessage(last))[it == occurrence.source]
-			
 			this.addresses++
-			if(addresses == Math.ceil(c_token * (nb_agents/nb_tokens))) {
-				emit(new Init())[it == occurrence.source]
+			var added  = false
+			var rotation = 0;
+			while ((nb_agents * rotation) < nb_tokens) {
+				
+				var t = (((c_token + (rotation * nb_tokens)) * Math.ceil(nb_agents / nb_tokens)) % nb_agents)
+				if(t==0) t = nb_agents
+				if (addresses == t) {
+					emit(new Init())[it == occurrence.source]
+								
+					added = true
+				}
+				rotation++	
+			}
+			if(added)
 				c_token++
-			} 
 			
 		}
 		last = occurrence.source
@@ -66,9 +76,11 @@ agent Master {
 		done_tokens++
 		if(done_tokens == nb_tokens){
 			info(done_tokens + " were completed")
-			info("time:"+System.currentTimeMillis);
+			info("time:" + System.currentTimeMillis);
+			val e = Config.exit();
 		}	
 		}
 	}
+	
 
 }

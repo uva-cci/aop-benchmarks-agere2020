@@ -7,7 +7,7 @@ agent Main {
       module Prelude prelude;
       
       	types p {
-		formula startMessage(int,int);
+		formula startMessage(int,int,int);
 		}
       
      
@@ -16,6 +16,13 @@ agent Main {
       
       string tokens = prelude.valueAsString(args, 0);
       string agents = prelude.valueAsString(args, 1);
+      string hops   = "50000";
+      
+      
+      if(prelude.size(args) > 2)
+      	hops = prelude.valueAsString(args, 2);
+      
+      C.println( " config: {\n\ttokens: "+tokens+"\n\tagents:"+agents+"\n\thops:"+hops+"\n} ");
       
       
       system.createAgent("master", "token_ring.Master");
@@ -26,5 +33,5 @@ agent Main {
           }
             
       
-      send(inform,"master", startMessage(M.intValue(tokens),M.intValue(agents)));
+      send(inform,"master", startMessage(M.intValue(tokens),M.intValue(agents),M.intValue(hops)));
   }

@@ -30,7 +30,9 @@ public class Timer extends Module {
 	
 	@TERM
 	   public int calc_worker(int I , int W, int T) {
-		return Math.round(I * ( W / T ));
+		int w = (int) ((I * Math.ceil( ((double) W) / ((double) T))) % W);
+		if(w == 0) return (int) W;
+		return w;
 	   }
 	
 	@TERM

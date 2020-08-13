@@ -15,13 +15,13 @@ agent Master {
 		formula neighbor(string);
 		formula done(int);
 		formula t_tokens(int);
-		formula startMessage(int,int);
+		formula startMessage(int,int,int);
 	}
 
 	
 	
 
-    rule +!init(int tokens,int threads) {
+    rule +!init(int tokens,int threads,int hops) {
     	
     	+t_tokens(tokens);
     	
@@ -58,7 +58,8 @@ agent Master {
           	
           	int w = timer.calc_worker(j,threads,tokens);
           	string address = "thread"+w;
-          	send(inform, address, token(50000));
+          	//console.println(address);
+          	send(inform, address, token(hops));
           	j++;
           	
           }
@@ -67,8 +68,8 @@ agent Master {
      }
      
      
-     rule @message(inform, string sender, startMessage(int tokens,int threads)) {
-     	!init(tokens,threads);
+     rule @message(inform, string sender, startMessage(int tokens,int threads,int hops)) {
+     	!init(tokens,threads,hops);
      }
      
      rule @message(inform, string sender, token(int Token)) : t_tokens(int tokens){
@@ -76,10 +77,10 @@ agent Master {
      	 synchronized(done) {
      	 
      	  	timer.done();
-     	  
-     	  	console.println(timer.finished());
+
      	  
      	  	if(timer.finished() == tokens) {
+     	  		console.println(tokens);
      	  		timer.time();
      	  		system.exit();
      	  	}

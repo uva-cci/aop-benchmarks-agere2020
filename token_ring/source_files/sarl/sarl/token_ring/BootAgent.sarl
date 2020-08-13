@@ -12,13 +12,13 @@ agent BootAgent {
 	uses Lifecycle, Logging
 
 	on Initialize {
-		
-		
+				
 		for (var i = 0; i < Config.nb_agents; i++) {
 			spawn(Thread)
 		}
 		spawn(Master)
 		killMe
+		
 	}
 
 }
