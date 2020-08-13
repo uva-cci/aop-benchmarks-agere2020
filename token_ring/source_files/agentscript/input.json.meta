@@ -2,12 +2,12 @@
   "agents": [
     {
       "name" : "thread",
-      "script_file" : "thread.asl",
-      "number": 500
+      "script_file" : "thread.ascript",
+      "number": __NBAGENTS__
     } ,
     {
       "name" : "master",
-      "script_file" : "master.asl",
+      "script_file" : "master.ascript",
       "number": 1
     }
   ]

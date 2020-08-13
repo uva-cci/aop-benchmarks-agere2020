@@ -7,8 +7,9 @@ import glob, os, shutil
 
 import re
 
-JASON_PATH = "/Users/giovanni/opt/jason/scripts"
-# JASON_PATH = "/home/mostafa/jason/scripts"
+SCRIPTCC_PATH = "/Users/giovanni/dev/benchmark"
+# SCRIPTCC_PATH = "/home/mostafa/benchmark"
+
 
 def remove_dir(path):
 	if os.path.isdir(path):
@@ -35,12 +36,10 @@ def generate_meta(nbagents, nbtokens, nbconsumptions, clean=True):
 
 	make_dir(path)
 
-	shutil.copyfile("./logging.properties", path+"/logging.properties")
+	ascript_files = glob.glob("*.ascript.meta")
+	json_files = glob.glob("*.json.meta")
 
-	asl_files = glob.glob("*.asl.meta")
-	mas2j_files = glob.glob("*.mas2j.meta")
-
-	for file in asl_files + mas2j_files:
+	for file in ascript_files + json_files:
 		fin = open(file, "rt")
 		fout = open(path + "/" + file.replace(".meta", ""), "wt")
 		for line in fin:
@@ -54,24 +53,28 @@ def generate_meta(nbagents, nbtokens, nbconsumptions, clean=True):
 
 def run_test(path, filename):
 
-	if not filename.endswith(".mas2j"):
+	if not filename.endswith(".json"):
 		raise RuntimeError("wrong filename: %s" % filename)
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	subprocess.run([JASON_PATH+"/jason", path+"/"+filename])
+	command = ["java", "-cp", SCRIPTCC_PATH+"/grounds-assembly-0.1.0-SNAPSHOT.jar", "scriptcc.Main", path+"/"+filename]
+	output = subprocess.run(command, capture_output=True)
 	cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 	print("CPU data: " + str(cpu_data))
 	end = time.time()
 	total_time = str((end - start) * 1000)
 	print("total time elapsed (ms): " + total_time)
 
-	start_pattern = re.compile("start\((\d+)\)\.")
-	end_pattern = re.compile("end\((\d+)\)\.")
+	start_pattern = re.compile("start at: (\d+)")
+	end_pattern = re.compile("done at: (\d+)")
+
+	string_output = str(output.stdout.decode('UTF-8'))
 
 	start_found = False
 	end_found = False
-	for i, line in enumerate(open(path+"/distributor-FINALSNAPSHOT.asl")):
+
+	for line in string_output.splitlines():
 		if start_found and end_found:
 			break
 		start_match = re.search(start_pattern, line)
@@ -105,7 +108,7 @@ for i in range(1, 3, 1): # iterating over numbers of agents
 
 			for w in range (2): # 10 executions to compute average and std_deviation
 				generate_meta(nbagents, nbtokens, nbconsumptions)
-				cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbconsumptions)), "threadring_with_distributor.mas2j")
+				cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbconsumptions)), "input.json")
 				evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbconsumptions) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 
 evaluation_file.close()
