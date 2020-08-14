@@ -1,20 +1,49 @@
+#!/bin/bash
+
+if [ -z "$5" ]; then
+    arg5=$1
+else
+    arg5=$5
+fi
+if [ -z "$4" ]; then
+    arg4=2
+else
+    arg4=$4
+fi
+if [ -z "$3" ]; then
+    arg3=2
+else
+    arg3=$3
+fi
+if [ -z "$2" ]; then
+    arg2=2
+else
+    arg2=$2
+fi
+if [ -z "$1" ]; then
+    arg1=1
+else
+    arg1=$1
+fi
+
 echo "################ AgentScript with transpilation ############"
-cd agentscript
-# python3 benchmark.py 2 3 3 3 2
+cd agentscript || exit
+# python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5
+echo "skipped"
 cd ..
 echo "################ Transpiled AgentScript ####################"
-cd agentscript_compiled
-python3 benchmark.py 2 3 3 3 2
+cd agentscript_compiled || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5
 cd ..
 echo "################ SARL ######################################"
-cd sarl
-python3 benchmark.py 2 3 3 3 2
+cd sarl || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5
 cd ..
 echo "################ ASTRA #####################################"
-cd astra
-python3 benchmark.py 2 3 3 3 2
+cd astra || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5
 cd ..
 echo "################ JASON #####################################"
-cd jason
-python3 benchmark.py 2 3 3 3 2
+cd jason || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5
 cd ..
