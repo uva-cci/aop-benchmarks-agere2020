@@ -76,6 +76,7 @@ def run_test(path, filename):
 	end_pattern = re.compile("done at: (\d+)")
 
 	string_output = str(output.stdout.decode('UTF-8'))
+	print(output)
 
 	start_found = False
 	end_found = False
