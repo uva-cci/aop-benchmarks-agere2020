@@ -8,7 +8,7 @@ import glob, os, shutil
 import re
 
 # ASTRAJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/astra/exec"
-ASTRAJAR_PATH = "/home/mostafa/src/token_ring/source_files/astra/exec"
+ASTRAJAR_PATH = "/home/mostafa/benchmark/token_ring/astra/exec"
 
 def run_test(nbagents, nbtokens, nbhops):
 
