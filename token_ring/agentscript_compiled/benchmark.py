@@ -7,8 +7,8 @@ import glob, os, shutil
 
 import re
 
-SCALAJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"
-# SCALAJAR_PATH = "/home/mostafa/src/token_ring/source_files/agentscript_compiled/exec"
+# SCALAJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"
+SCALAJAR_PATH = "/home/mostafa/src/token_ring/agentscript_compiled/exec"
 
 def run_test(nbagents, nbtokens, nbhops):
 

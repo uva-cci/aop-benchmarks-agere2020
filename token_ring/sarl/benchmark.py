@@ -7,8 +7,8 @@ import glob, os, shutil
 
 import re
 
-SARLJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"
-# SARLJAR_PATH = "/home/mostafa/src/token_ring/sarl/exec"
+# SARLJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"
+SARLJAR_PATH = "/home/mostafa/src/token_ring/sarl/exec"
 
 def run_test(nbagents, nbtokens, nbhops):
 

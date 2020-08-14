@@ -7,8 +7,8 @@ import glob, os, shutil
 
 import re
 
-JASON_PATH = "/Users/giovanni/opt/jason/scripts"
-# JASON_PATH = "/home/mostafa/jason/scripts"
+# JASON_PATH = "/Users/giovanni/opt/jason/scripts"
+JASON_PATH = "/home/mostafa/jason/scripts"
 
 def remove_dir(path):
 	if os.path.isdir(path):

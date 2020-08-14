@@ -1,5 +1,15 @@
-python3 agentscript/benchmark.py 2 3 3 3 2
-python3 agentscript_compiled/benchmark.py 2 3 3 3 2
-python3 sarl/benchmark.py 2 3 3 3 2
-python3 astra/benchmark.py 2 3 3 3 2
-python3 jason/benchmark.py 2 3 3 3 2
+cd agentscript
+python3 benchmark.py 2 3 3 3 2
+cd ..
+cd agentscript_compiled
+python3 benchmark.py 2 3 3 3 2
+cd ..
+cd sarl
+python3 benchmark.py 2 3 3 3 2
+cd ..
+cd astra
+python3 benchmark.py 2 3 3 3 2
+cd ..
+cd jason 
+python3 benchmark.py 2 3 3 3 2
+cd ..

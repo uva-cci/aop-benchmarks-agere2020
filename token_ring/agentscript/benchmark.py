@@ -7,8 +7,8 @@ import glob, os, shutil
 
 import re
 
-SCRIPTCC_PATH = "/Users/giovanni/dev/benchmark"
-# SCRIPTCC_PATH = "/home/mostafa/src"
+# SCRIPTCC_PATH = "/Users/giovanni/dev/benchmark"
+SCRIPTCC_PATH = "/home/mostafa/benchmark"
 
 def remove_dir(path):
 	if os.path.isdir(path):
