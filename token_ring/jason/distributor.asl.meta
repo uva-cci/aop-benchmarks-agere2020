@@ -1,7 +1,7 @@
 // parameters --
 // number of tokens: __NBTOKENS__
 // number of agents: __NBAGENTS__
-// number of consumptions: __NBCONSUMPTIONS__
+// number of consumptions: __NBHOPS__
 
 t_total(__NBTOKENS__).
 t_counter(1).
@@ -15,7 +15,7 @@ ended(0).
     while (t_counter(I) & I <= T) {
     	W = math.ceil(I * (WT/T));
         .concat("thread_with_distributor", W, Thread);
-        .send(Thread, achieve, token(__NBCONSUMPTIONS__));
+        .send(Thread, achieve, token(__NBHOPS__));
         -+t_counter(I+1);
     }
 .

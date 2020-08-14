@@ -1,0 +1,5 @@
+python3 agentscript/benchmark.py 2 3 3 3 2
+python3 agentscript_compiled/benchmark.py 2 3 3 3 2
+python3 sarl/benchmark.py 2 3 3 3 2
+python3 astra/benchmark.py 2 3 3 3 2
+python3 jason/benchmark.py 2 3 3 3 2

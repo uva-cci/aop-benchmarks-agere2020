@@ -24,11 +24,11 @@ def make_dir(path):
 		except OSError as e:
 			raise RuntimeError("error in creating directory: %s -- %s" % (path, e.strerror))
 
-def generate_meta(nbagents, nbtokens, nbconsumptions, clean=True):
+def generate_meta(nbagents, nbtokens, nbhops, clean=True):
 
-	print("generating test: Workers: %s, Tokens: %s, Consumptions: %s" % (nbagents, nbtokens, nbconsumptions))
+	print("generating test: Workers: %s, Tokens: %s, Consumptions: %s" % (nbagents, nbtokens, nbhops))
 
-	path = "W%s_T%s_C%s" % (nbagents, nbtokens, nbconsumptions)
+	path = "W%s_T%s_C%s" % (nbagents, nbtokens, nbhops)
 
 	if clean:
 		remove_dir(path)
@@ -47,7 +47,7 @@ def generate_meta(nbagents, nbtokens, nbconsumptions, clean=True):
 			fout.write(line
 					   .replace('__NBAGENTS__', str(nbagents))
 					   .replace('__NBTOKENS__', str(nbtokens))
-					   .replace('__NBCONSUMPTIONS__', str(nbconsumptions)))
+					   .replace('__NBCONSUMPTIONS__', str(nbhops)))
 		fin.close()
 		fout.close()
 
@@ -93,19 +93,29 @@ def run_test(path, filename):
 
 # ------------ main
 
-evaluation_file = open("benchmark.csv", "w")
-evaluation_file.write("nbagents;nbtokens;nbconsumptions;cpudata;total_time;internal_time\n")
+def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 
-for i in range(1, 3, 1): # iterating over numbers of agents
-	nbagents = 10**i
-	for j in range(0, 3, 1): # iterating over numbers of tokens
-		nbtokens = 10 ** j
-		for z in range(0, 3, 1): # iterating over numbers of consumptions
-			nbconsumptions = 10 ** z
+	evaluation_file = open("benchmark-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXAGENTSLOG, BASE**MAXHOPSLOG), "w")
+	evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
 
-			for w in range (2): # 10 executions to compute average and std_deviation
-				generate_meta(nbagents, nbtokens, nbconsumptions)
-				cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbconsumptions)), "threadring_with_distributor.mas2j")
-				evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbconsumptions) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+	for i in range(1, MAXAGENTSLOG, 1): # iterating over numbers of agents
+		nbagents = BASE**i
+		for j in range(1, MAXTOKENSLOG, 1): # iterating over numbers of tokens
+			nbtokens = BASE**j
+			for z in range(1, MAXHOPSLOG, 1): # iterating over numbers of consumptions
+				nbhops = BASE**z
 
-evaluation_file.close()
+				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
+					generate_meta(nbagents, nbtokens, nbhops)
+					cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbhops)), "threadring_with_distributor.mas2j")
+					evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbhops) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+
+	evaluation_file.close()
+
+
+if __name__ == "__main__":
+	import sys
+	if len(sys.argv) != 6:
+		print("Usage: [BASE] [MAXAGENTSLOG] [MAXTOKENSLOG] [MAXHOPSLOG] [REPETITIONS]")
+	else:
+		main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))

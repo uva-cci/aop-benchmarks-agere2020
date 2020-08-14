@@ -1,11 +1,11 @@
 // parameters --
 // number of tokens: __NBTOKENS__
 // number of agents: __NBAGENTS__
-// number of consumptions: __NBCONSUMPTIONS__
+// number of consumptions: __NBHOPS__
 
 agents(__NBAGENTS__).
 tokens(__NBTOKENS__).
-token_value(__NBCONSUMPTIONS__).
+token_value(__NBHOPS__).
 
 !init.
 
@@ -13,15 +13,15 @@ token_value(__NBCONSUMPTIONS__).
     #print("start at: ");
     #println(#System.currentTimeMillis());
     +not_done(T);
-    for(I in between(1,T,I)) {
-          J = #std.math.round(I * ( W / T ));
+    for(I in between(1, T, I)) {
+          J = #std.math.ceil(I * ( W / T ));
           #achieve("thread"+J,token(V));
         }
    .
 
 @atomic
 +!done : not_done(T) =>
-    if(T == 1) {
+    if (T == 1) {
         #print("done at: ");
         #println(#System.currentTimeMillis());
         #std.coms.exit();

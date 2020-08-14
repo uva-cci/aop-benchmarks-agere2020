@@ -7,57 +7,16 @@ import glob, os, shutil
 
 import re
 
-SCRIPTCC_PATH = "/Users/giovanni/dev/benchmark"
-# SCRIPTCC_PATH = "/home/mostafa/src"
+SCALAJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"
+# SCALAJAR_PATH = "/home/mostafa/src/token_ring/source_files/agentscript_compiled/exec"
 
-def remove_dir(path):
-	if os.path.isdir(path):
-		try:
-			shutil.rmtree(path)
-		except OSError as e:
-			raise RuntimeError("error in removing directory: %s -- %s" % (path, e.strerror))
+def run_test(nbagents, nbtokens, nbhops):
 
-def make_dir(path):
-	if not os.path.isdir(path):
-		try:
-			os.mkdir(path)
-		except OSError as e:
-			raise RuntimeError("error in creating directory: %s -- %s" % (path, e.strerror))
-
-def generate_meta(nbagents, nbtokens, nbhops, clean=True):
-
-	print("generating test: Workers: %s, Tokens: %s, Consumptions: %s" % (nbagents, nbtokens, nbhops))
-
-	path = "W%s_T%s_C%s" % (nbagents, nbtokens, nbhops)
-
-	if clean:
-		remove_dir(path)
-
-	make_dir(path)
-
-	ascript_files = glob.glob("*.ascript.meta")
-	json_files = glob.glob("*.json.meta")
-
-	for file in ascript_files + json_files:
-		fin = open(file, "rt")
-		fout = open(path + "/" + file.replace(".meta", ""), "wt")
-		for line in fin:
-			fout.write(line
-					   .replace('__NBAGENTS__', str(nbagents))
-					   .replace('__NBTOKENS__', str(nbtokens))
-					   .replace('__NBHOPS__', str(nbhops)))
-		fin.close()
-		fout.close()
-
-
-def run_test(path, filename):
-
-	if not filename.endswith(".json"):
-		raise RuntimeError("wrong filename: %s" % filename)
+	print("starting test: Workers: %s, Tokens: %s, Hops: %s" % (nbagents, nbtokens, nbhops))
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	command = ["java", "-cp", SCRIPTCC_PATH+"/grounds-assembly-0.1.0-SNAPSHOT.jar", "scriptcc.Main", path+"/"+filename]
+	command = ["java", "-cp", SCALAJAR_PATH+"/grounds_benchmarks.jar", "benchmark.Token_ring", str(nbtokens), str(nbagents), str(nbhops)]
 	output = subprocess.run(command, capture_output=True)
 	cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 	print("CPU data: " + str(cpu_data))
@@ -65,25 +24,36 @@ def run_test(path, filename):
 	total_time = str((end - start) * 1000)
 	print("total time elapsed (ms): " + total_time)
 
-	start_pattern = re.compile("start at: (\d+)")
-	end_pattern = re.compile("done at: (\d+)")
+	start_pattern = re.compile("start at:")
+	number_pattern = re.compile("(\d+)")
+	end_pattern = re.compile("done at:")
 
 	string_output = str(output.stdout.decode('UTF-8'))
 
+	print(output)
+
 	start_found = False
 	end_found = False
-
+	number = False
 	for line in string_output.splitlines():
 		if start_found and end_found:
+			number_match = re.search(number_pattern, line)
+			end_value = int(number_match.group(1))
 			break
-		start_match = re.search(start_pattern, line)
-		if start_match is not None:
-			start_value = int(start_match.group(1))
-			start_found = True
-		end_match = re.search(end_pattern, line)
-		if end_match is not None:
-			end_value = int(end_match.group(1))
-			end_found = True
+		if start_found is False:
+			start_match = re.search(start_pattern, line)
+			if start_match is not None:
+				start_found = True
+				number = True
+		else:
+			if number:
+				number_match = re.search(number_pattern, line)
+				start_value = int(number_match.group(1))
+				number = False
+			else:
+				end_match = re.search(end_pattern, line)
+				if end_match is not None:
+					end_found = True
 
 	if start_found is False or end_found is False:
 		raise RuntimeError("Unexpected result (no or partial time signatures).")
@@ -108,10 +78,9 @@ def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 				nbhops = BASE**z
 
 				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
-					generate_meta(nbagents, nbtokens, nbhops)
-					cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbhops)), "input.json")
+					cpudata, total_time, internal_time = run_test(nbagents, nbtokens, nbhops)
 					evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbhops) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
-	
+
 	evaluation_file.close()
 
 

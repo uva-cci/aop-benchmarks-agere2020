@@ -7,8 +7,8 @@ import glob, os, shutil
 
 import re
 
-ASTRAJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/astra/exec"
-# ASTRAJAR_PATH = "/home/mostafa/src/token_ring/source_files/astra/exec"
+SARLJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"
+# SARLJAR_PATH = "/home/mostafa/src/token_ring/sarl/exec"
 
 def run_test(nbagents, nbtokens, nbhops):
 
@@ -16,7 +16,7 @@ def run_test(nbagents, nbtokens, nbhops):
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	command = ["java", "-jar", ASTRAJAR_PATH+"/ASTRA_tokens.jar", str(nbtokens), str(nbagents), str(nbhops)]
+	command = ["java", "-cp", SARLJAR_PATH+"/sarl_tokens.jar", "token_ring.Config", str(nbtokens), str(nbagents), str(nbhops)]
 	output = subprocess.run(command, capture_output=True)
 	cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 	print("CPU data: " + str(cpu_data))
@@ -57,9 +57,6 @@ def run_test(nbagents, nbtokens, nbhops):
 	return (cpu_data, total_time, internal_time)
 
 # ------------ main
-
-evaluation_file = open("benchmark.csv", "w")
-evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
 
 def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 
