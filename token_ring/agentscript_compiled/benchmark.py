@@ -75,11 +75,11 @@ def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 	evaluation_file = open("benchmark-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXAGENTSLOG, BASE**MAXHOPSLOG), "w")
 	evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
 
-	for i in range(1, MAXAGENTSLOG, 1): # iterating over numbers of agents
+	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
 		nbagents = BASE**i
-		for j in range(1, MAXTOKENSLOG, 1): # iterating over numbers of tokens
+		for j in range(1, MAXTOKENSLOG + 1, 1): # iterating over numbers of tokens
 			nbtokens = BASE**j
-			for z in range(1, MAXHOPSLOG, 1): # iterating over numbers of consumptions
+			for z in range(1, MAXHOPSLOG + 1, 1): # iterating over numbers of consumptions
 				nbhops = BASE**z
 
 				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
