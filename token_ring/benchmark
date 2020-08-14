@@ -1,15 +1,20 @@
+echo "################ AgentScript with transpilation ############"
 cd agentscript
 # python3 benchmark.py 2 3 3 3 2
 cd ..
+echo "################ Transpiled AgentScript ####################"
 cd agentscript_compiled
 python3 benchmark.py 2 3 3 3 2
 cd ..
+echo "################ SARL ######################################"
 cd sarl
 python3 benchmark.py 2 3 3 3 2
 cd ..
+echo "################ ASTRA #####################################"
 cd astra
 python3 benchmark.py 2 3 3 3 2
 cd ..
-cd jason 
+echo "################ JASON #####################################"
+cd jason
 python3 benchmark.py 2 3 3 3 2
 cd ..

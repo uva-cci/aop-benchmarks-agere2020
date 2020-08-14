@@ -8,7 +8,7 @@ import glob, os, shutil
 import re
 
 JASON_PATH = None
-for path in ["/home/mostafa/jason/scripts", "/Users/giovanni/opt/jason/scripts"]:
+for path in ["/home/mostafa/jason-latest/jason/build", "/Users/giovanni/opt/jason/scripts"]:
 	if os.path.isdir(path):
 		JASON_PATH = path
 
