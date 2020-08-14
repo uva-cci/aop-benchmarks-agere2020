@@ -1,11 +1,11 @@
 // parameters --
-// number of tokens: __NBTOKENS__
-// number of agents: __NBAGENTS__
+// number of tokens: 2
+// number of agents: 2
 // number of consumptions: __NBHOPS__
 
-t_total(__NBTOKENS__).
+t_total(2).
 t_counter(1).
-w_total(__NBAGENTS__).
+w_total(2).
 ended(0).
 !init_all.
 

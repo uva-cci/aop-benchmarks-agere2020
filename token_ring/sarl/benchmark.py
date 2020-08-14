@@ -7,8 +7,13 @@ import glob, os, shutil
 
 import re
 
-# SARLJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"
-SARLJAR_PATH = "/home/mostafa/src/token_ring/sarl/exec"
+SARLJAR_PATH = None
+for path in ["/home/mostafa/src/token_ring/sarl/exec", "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"]:
+	if os.path.isdir(path):
+		SARLJAR_PATH = path
+
+if SARLJAR_PATH is None:
+	raise RuntimeError("Not valid sarl jar path")
 
 def run_test(nbagents, nbtokens, nbhops):
 

@@ -7,8 +7,13 @@ import glob, os, shutil
 
 import re
 
-# SCRIPTCC_PATH = "/Users/giovanni/dev/benchmark"
-SCRIPTCC_PATH = "/home/mostafa/benchmark"
+SCRIPTCC_PATH = None
+for path in ["/home/mostafa/benchmark", "/Users/giovanni/dev/benchmark"]:
+	if os.path.isdir(path):
+		SCRIPTCC_PATH = path
+
+if SCRIPTCC_PATH is None:
+	raise RuntimeError("Not valid scriptcc path")
 
 def remove_dir(path):
 	if os.path.isdir(path):

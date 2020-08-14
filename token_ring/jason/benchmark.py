@@ -7,8 +7,13 @@ import glob, os, shutil
 
 import re
 
-# JASON_PATH = "/Users/giovanni/opt/jason/scripts"
-JASON_PATH = "/home/mostafa/jason/scripts"
+JASON_PATH = None
+for path in ["/home/mostafa/jason/scripts", "/Users/giovanni/opt/jason/scripts"]:
+	if os.path.isdir(path):
+		JASON_PATH = path
+
+if JASON_PATH is None:
+	raise RuntimeError("Not valid jason path")
 
 def remove_dir(path):
 	if os.path.isdir(path):
@@ -59,19 +64,23 @@ def run_test(path, filename):
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	subprocess.run([JASON_PATH+"/jason", path+"/"+filename])
+	command = [JASON_PATH+"/jason", path+"/"+filename]
+	output = subprocess.run(command, capture_output=True)
 	cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 	print("CPU data: " + str(cpu_data))
 	end = time.time()
 	total_time = str((end - start) * 1000)
 	print("total time elapsed (ms): " + total_time)
 
-	start_pattern = re.compile("start\((\d+)\)\.")
-	end_pattern = re.compile("end\((\d+)\)\.")
+	start_pattern = re.compile("start at: (\d+)")
+	end_pattern = re.compile("done at: (\d+)")
+
+	string_output = str(output.stdout.decode('UTF-8'))
 
 	start_found = False
 	end_found = False
-	for i, line in enumerate(open(path+"/distributor-FINALSNAPSHOT.asl")):
+
+	for line in string_output.splitlines():
 		if start_found and end_found:
 			break
 		start_match = re.search(start_pattern, line)

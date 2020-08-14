@@ -7,8 +7,13 @@ import glob, os, shutil
 
 import re
 
-# ASTRAJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/astra/exec"
-ASTRAJAR_PATH = "/home/mostafa/benchmark/token_ring/astra/exec"
+ASTRAJAR_PATH = None
+for path in ["/home/mostafa/src/token_ring/astra/exec", "/Users/giovanni/dev/benchmark/token_ring/astra/exec"]:
+	if os.path.isdir(path):
+		ASTRAJAR_PATH = path
+
+if ASTRAJAR_PATH is None:
+	raise RuntimeError("Not valid astra jar path")
 
 def run_test(nbagents, nbtokens, nbhops):
 

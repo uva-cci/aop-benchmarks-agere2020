@@ -7,8 +7,13 @@ import glob, os, shutil
 
 import re
 
-# SCALAJAR_PATH = "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"
-SCALAJAR_PATH = "/home/mostafa/benchmark/token_ring/agentscript_compiled/exec"
+SCALAJAR_PATH = None
+for path in ["/home/mostafa/src/token_ring/agentscript_compiled/exec", "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"]:
+	if os.path.isdir(path):
+		SCALAJAR_PATH = path
+
+if SCALAJAR_PATH is None:
+	raise RuntimeError("Not valid scala jar path")
 
 def run_test(nbagents, nbtokens, nbhops):
 
