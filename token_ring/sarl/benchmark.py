@@ -8,7 +8,7 @@ import glob, os, shutil
 import re
 
 SARLJAR_PATH = None
-for path in ["/home/mostafa/src/token_ring/sarl/exec", "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"]:
+for path in ["/home/mostafa/benchmark/token_ring/sarl/exec", "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"]:
 	if os.path.isdir(path):
 		SARLJAR_PATH = path
 

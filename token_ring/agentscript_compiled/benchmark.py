@@ -8,7 +8,7 @@ import glob, os, shutil
 import re
 
 SCALAJAR_PATH = None
-for path in ["/home/mostafa/src/token_ring/agentscript_compiled/exec", "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"]:
+for path in ["/home/mostafa/benchmark/token_ring/agentscript_compiled/exec", "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"]:
 	if os.path.isdir(path):
 		SCALAJAR_PATH = path
 

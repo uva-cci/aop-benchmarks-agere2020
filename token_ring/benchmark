@@ -1,5 +1,5 @@
 cd agentscript
-python3 benchmark.py 2 3 3 3 2
+# python3 benchmark.py 2 3 3 3 2
 cd ..
 cd agentscript_compiled
 python3 benchmark.py 2 3 3 3 2
