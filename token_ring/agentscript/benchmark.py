@@ -7,9 +7,8 @@ import glob, os, shutil
 
 import re
 
-SCRIPTCC_PATH = "/Users/giovanni/dev/benchmark"
-# SCRIPTCC_PATH = "/home/mostafa/benchmark"
-
+# SCRIPTCC_PATH = "/Users/giovanni/dev/benchmark"
+SCRIPTCC_PATH = "/home/mostafa/benchmark"
 
 def remove_dir(path):
 	if os.path.isdir(path):
@@ -101,9 +100,9 @@ evaluation_file.write("nbagents;nbtokens;nbconsumptions;cpudata;total_time;inter
 
 for i in range(1, 3, 1): # iterating over numbers of agents
 	nbagents = 10**i
-	for j in range(0, 3, 1): # iterating over numbers of tokens
+	for j in range(1, 3, 1): # iterating over numbers of tokens
 		nbtokens = 10 ** j
-		for z in range(0, 3, 1): # iterating over numbers of consumptions
+		for z in range(1, 3, 1): # iterating over numbers of consumptions
 			nbconsumptions = 10 ** z
 
 			for w in range (2): # 10 executions to compute average and std_deviation
