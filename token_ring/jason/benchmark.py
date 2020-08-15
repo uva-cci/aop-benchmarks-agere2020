@@ -105,7 +105,7 @@ def run_test(path, filename):
 
 def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 
-	evaluation_file = open("benchmark-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXAGENTSLOG, BASE**MAXHOPSLOG), "w")
+	evaluation_file = open("../benchmark-jason-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXAGENTSLOG, BASE**MAXHOPSLOG), "w")
 	evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
 
 	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents

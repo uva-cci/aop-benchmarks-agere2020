@@ -33,7 +33,6 @@ echo "skipped"
 cd ..
 echo "################ Transpiled AgentScript ####################"
 cd agentscript_compiled || exit
-echo $arg1
 python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5 || exit
 cd ..
 echo "################ SARL ######################################"
