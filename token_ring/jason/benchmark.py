@@ -52,7 +52,7 @@ def generate_meta(nbagents, nbtokens, nbhops, clean=True):
 			fout.write(line
 					   .replace('__NBAGENTS__', str(nbagents))
 					   .replace('__NBTOKENS__', str(nbtokens))
-					   .replace('__NBCONSUMPTIONS__', str(nbhops)))
+					   .replace('__NBHOPS__', str(nbhops)))
 		fin.close()
 		fout.close()
 
@@ -138,3 +138,4 @@ if __name__ == "__main__":
 		print("Usage: [BASE] [MAXAGENTSLOG] [MAXTOKENSLOG] [MAXHOPSLOG] [REPETITIONS]")
 	else:
 		main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
+
