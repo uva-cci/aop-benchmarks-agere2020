@@ -1,0 +1,20 @@
+#!/bin/bash
+
+cd agentscript || exit
+rm -rf W*
+rm *.csv
+cd ..
+echo "################ Transpiled AgentScript ####################"
+rm *.csv
+cd ..
+echo "################ SARL ######################################"
+rm *.csv
+cd ..
+echo "################ ASTRA #####################################"
+rm *.csv
+cd ..
+echo "################ JASON #####################################"
+cd jason || exit
+rm -rf W*
+rm *.csv
+cd ..
