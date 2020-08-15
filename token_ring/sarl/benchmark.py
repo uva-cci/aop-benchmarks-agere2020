@@ -19,45 +19,53 @@ def run_test(nbagents, nbtokens, nbhops):
 
 	print("starting test: Workers: %s, Tokens: %s, Hops: %s" % (nbagents, nbtokens, nbhops))
 
+	cpu_data = None
+
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
 	command = ["java", "-cp", SARLJAR_PATH+"/sarl_tokens.jar", "token_ring.Config", str(nbtokens), str(nbagents), str(nbhops)]
-	output = subprocess.run(command, capture_output=True, timeout=30)
-	cpu_data = psutil.cpu_percent(interval=0, percpu=True)
-	print("CPU data: " + str(cpu_data))
-	end = time.time()
-	total_time = str((end - start) * 1000)
+	try:
+		output = subprocess.run(command, capture_output=True, timeout=30)
+		cpu_data = psutil.cpu_percent(interval=0, percpu=True)
+		print("CPU data: " + str(cpu_data))
+		end = time.time()
+		total_time = str(round((end - start) * 1000))
+	except subprocess.TimeoutExpired:
+		total_time = "TIMEOUT"
+		internal_time = "TIMEOUT"
+
 	print("total time elapsed (ms): " + total_time)
 
-	start_pattern = re.compile("time:(\d+)")
-	end_pattern = re.compile("time:(\d+)")
+	if total_time != "TIMEOUT":
+		start_pattern = re.compile("time:(\d+)")
+		end_pattern = re.compile("time:(\d+)")
 
-	string_output = str(output.stdout.decode('UTF-8'))
+		string_output = str(output.stdout.decode('UTF-8'))
 
-	print(output)
+		print(output)
 
-	start_found = False
-	end_found = False
+		start_found = False
+		end_found = False
 
-	for line in string_output.splitlines():
-		if start_found and end_found:
-			break
-		if start_found is False:
-			start_match = re.search(start_pattern, line)
-			if start_match is not None:
-				start_value = int(start_match.group(1))
-				start_found = True
-		else:
-			end_match = re.search(end_pattern, line)
-			if end_match is not None:
-				end_value = int(end_match.group(1))
-				end_found = True
+		for line in string_output.splitlines():
+			if start_found and end_found:
+				break
+			if start_found is False:
+				start_match = re.search(start_pattern, line)
+				if start_match is not None:
+					start_value = int(start_match.group(1))
+					start_found = True
+			else:
+				end_match = re.search(end_pattern, line)
+				if end_match is not None:
+					end_value = int(end_match.group(1))
+					end_found = True
 
-	if start_found is False or end_found is False:
-		raise RuntimeError("Unexpected result (no or partial time signatures).")
+		if start_found is False or end_found is False:
+			raise RuntimeError("Unexpected result (no or partial time signatures).")
 
-	internal_time = end_value - start_value
-	print("internal time elapsed (ms): " + str((internal_time)))
+		internal_time = end_value - start_value
+		print("internal time elapsed (ms): " + str((internal_time)))
 
 	return (cpu_data, total_time, internal_time)
 
