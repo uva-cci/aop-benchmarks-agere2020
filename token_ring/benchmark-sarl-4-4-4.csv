@@ -1,0 +1,9 @@
+nbagents;nbtokens;nbhops;cpudata;total_time;internal_time
+2;2;2;None;TIMEOUT;TIMEOUT
+2;2;4;None;TIMEOUT;TIMEOUT
+2;4;2;None;TIMEOUT;TIMEOUT
+2;4;4;None;TIMEOUT;TIMEOUT
+4;2;2;None;TIMEOUT;TIMEOUT
+4;2;4;None;TIMEOUT;TIMEOUT
+4;4;2;None;TIMEOUT;TIMEOUT
+4;4;4;None;TIMEOUT;TIMEOUT
