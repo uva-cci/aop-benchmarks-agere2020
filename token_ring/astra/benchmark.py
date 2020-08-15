@@ -27,7 +27,7 @@ def run_test(nbagents, nbtokens, nbhops):
 	command = ["java", "-jar", ASTRAJAR_PATH+"/ASTRA_tokens.jar", str(nbtokens), str(nbagents), str(nbhops)]
 
 	try:
-		output = subprocess.run(command, capture_output=True, timeout=120)
+		output = subprocess.run(command, capture_output=True, timeout=60)
 		cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 		print("CPU data: " + str(cpu_data))
 		end = time.time()
