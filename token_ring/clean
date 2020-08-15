@@ -1,23 +1,24 @@
 #!/bin/bash
 
+rm -rf *.csv
 cd agentscript || exit
 rm -rf W*
-rm *.csv
+rm -rf *.csv
 cd ..
 echo "################ Transpiled AgentScript ####################"
 cd agentscript_compiled || exit
-rm *.csv
+rm -rf *.csv
 cd ..
 echo "################ SARL ######################################"
 cd sarl || exit
-rm *.csv
+rm -rf *.csv
 cd ..
 echo "################ ASTRA #####################################"
 cd astra || exit
-rm *.csv
+rm -rf *.csv
 cd ..
 echo "################ JASON #####################################"
 cd jason || exit
 rm -rf W*
-rm *.csv
+rm -rf *.csv
 cd ..

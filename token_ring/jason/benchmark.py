@@ -65,7 +65,7 @@ def run_test(path, filename):
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
 	command = [JASON_PATH+"/jason", path+"/"+filename]
-	output = subprocess.run(command, capture_output=True)
+	output = subprocess.run(command, capture_output=True, timeout=10)
 	cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 	print("CPU data: " + str(cpu_data))
 	end = time.time()
