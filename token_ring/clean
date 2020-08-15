@@ -5,12 +5,15 @@ rm -rf W*
 rm *.csv
 cd ..
 echo "################ Transpiled AgentScript ####################"
+cd agentscript_compiled || exit
 rm *.csv
 cd ..
 echo "################ SARL ######################################"
+cd sarl || exit
 rm *.csv
 cd ..
 echo "################ ASTRA #####################################"
+cd astra || exit
 rm *.csv
 cd ..
 echo "################ JASON #####################################"
