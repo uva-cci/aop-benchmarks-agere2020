@@ -67,7 +67,7 @@ def run_test(path, filename):
 	command = ["java", "-cp", SCRIPTCC_PATH+"/grounds-assembly-0.1.0-SNAPSHOT.jar", "scriptcc.Main", path+"/"+filename]
 
 	try:
-		output = subprocess.run(command, capture_output=True, timeout=120)
+		output = subprocess.run(command, capture_output=True, timeout=60)
 		cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 		print("CPU data: " + str(cpu_data))
 		end = time.time()
