@@ -18,7 +18,7 @@ fi
 if [ -z "$2" ]; then
     arg2="2"
 else
-    arg2=$2 v
+    arg2=$2
 fi
 if [ -z "$1" ]; then
     arg1="2"
