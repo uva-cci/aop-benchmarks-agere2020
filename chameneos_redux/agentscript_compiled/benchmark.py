@@ -25,7 +25,7 @@ def run_test(nbagents, nbmeetings):
 	psutil.cpu_percent(interval=0, percpu=True)
 	command = ["java", "-cp", SCALAJAR_PATH +"/grounds_benchmarks.jar", "benchmark.Chameneos", str(nbmeetings), str(nbagents)]
 
-	print("command: %s" % " ".join(command))
+	print("command: %s" % (" ".join(command)))
 
 	try:
 		output = subprocess.run(command, capture_output=True, timeout=60)
