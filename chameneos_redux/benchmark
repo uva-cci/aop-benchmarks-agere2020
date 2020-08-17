@@ -1,0 +1,49 @@
+#!/bin/bash
+
+if [ -z "$5" ]; then
+    arg5="1"
+else
+    arg5=$5
+fi
+if [ -z "$4" ]; then
+    arg4="2"
+else
+    arg4=$4
+fi
+if [ -z "$3" ]; then
+    arg3="2"
+else
+    arg3=$3
+fi
+if [ -z "$2" ]; then
+    arg2="2"
+else
+    arg2=$2
+fi
+if [ -z "$1" ]; then
+    arg1="2"
+else
+    arg1=$1
+fi
+
+echo "################ AgentScript with transpilation ############"
+cd agentscript || exit
+# python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
+echo "skipped"
+cd ..
+echo "################ Transpiled AgentScript ####################"
+cd agentscript_compiled || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
+cd ..
+echo "################ SARL ######################################"
+cd sarl || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
+cd ..
+echo "################ ASTRA #####################################"
+cd astra || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
+cd ..
+echo "################ JASON #####################################"
+cd jason || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
+cd ..

@@ -13,7 +13,9 @@
 !start. 
 
 +!start
-   <- !show_complements;
+   <- Time = system.time;
+      .print("start at: ", Time);
+      !show_complements;
       !run.
    
 +!show_complements
@@ -50,7 +52,9 @@
       .send(L,achieve,go_mall).
       
 +!run // no more runs
-   <- .stopMAS.
+   <- Time = system.time;
+      .print("done at: ", Time);
+      .stopMAS.
       
 +run_finished : chameneos_names(L) // belief sent by broker 
    <- .send(L,askOne,nm(_)).       // ask chameneos the number of meetings

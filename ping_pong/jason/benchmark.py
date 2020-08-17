@@ -29,11 +29,11 @@ def make_dir(path):
 		except OSError as e:
 			raise RuntimeError("error in creating directory: %s -- %s" % (path, e.strerror))
 
-def generate_meta(nbagents, nbtokens, nbhops, clean=True):
+def generate_meta(nbmatches, nbballs, delay, clean=True):
 
-	print("generating test: Workers: %s, Tokens: %s, Consumptions: %s" % (nbagents, nbtokens, nbhops))
+	print("generating test: Matches: %s, Balls: %s, Delay: %s" % (nbmatches, nbballs, delay))
 
-	path = "W%s_T%s_C%s" % (nbagents, nbtokens, nbhops)
+	path = "M%s_B%s_D%s" % (nbmatches, nbballs, delay)
 
 	if clean:
 		remove_dir(path)
@@ -41,6 +41,7 @@ def generate_meta(nbagents, nbtokens, nbhops, clean=True):
 	make_dir(path)
 
 	shutil.copyfile("./logging.properties", path+"/logging.properties")
+	shutil.copytree("./actions", path+"/actions")
 
 	asl_files = glob.glob("*.asl.meta")
 	mas2j_files = glob.glob("*.mas2j.meta")
@@ -50,9 +51,9 @@ def generate_meta(nbagents, nbtokens, nbhops, clean=True):
 		fout = open(path + "/" + file.replace(".meta", ""), "wt")
 		for line in fin:
 			fout.write(line
-					   .replace('__NBAGENTS__', str(nbagents))
-					   .replace('__NBTOKENS__', str(nbtokens))
-					   .replace('__NBHOPS__', str(nbhops)))
+					   .replace('__NBMATCHES__', str(nbmatches))
+					   .replace('__NBBALLS__', str(nbballs))
+					   .replace('__DELAY__', str(delay)))
 		fin.close()
 		fout.close()
 
@@ -69,6 +70,8 @@ def run_test(path, filename):
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
 	command = [JASON_PATH+"/jason", path+"/"+filename]
+
+	print("command: %s" % (" ".join(command)))
 
 	try:
 		output = subprocess.run(command, capture_output=True, timeout=60)
@@ -93,16 +96,16 @@ def run_test(path, filename):
 		end_found = False
 
 		for line in string_output.splitlines():
-			if start_found and end_found:
-				break
-			start_match = re.search(start_pattern, line)
-			if start_match is not None:
-				start_value = int(start_match.group(1))
-				start_found = True
-			end_match = re.search(end_pattern, line)
-			if end_match is not None:
-				end_value = int(end_match.group(1))
-				end_found = True
+			if start_found is False:
+				start_match = re.search(start_pattern, line)
+				if start_match is not None:
+					start_value = int(start_match.group(1))
+					start_found = True
+			else:
+				end_match = re.search(end_pattern, line)
+				if end_match is not None:
+					end_value = int(end_match.group(1))
+					end_found = True
 
 		if start_found is False or end_found is False:
 			raise RuntimeError("Unexpected result (no or partial time signatures).")
@@ -114,45 +117,50 @@ def run_test(path, filename):
 
 # ------------ main
 
-def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
+def main(BASE, MAXMATCHESLOG, MAXBALLSLOG, MAXDELAYLOG, REPETITIONS):
+	evaluation_file = open(
+		"../benchmark-jason-%d-%d-%d.csv" % (BASE ** MAXMATCHESLOG, BASE ** MAXBALLSLOG, MAXDELAYLOG), "w")
+	evaluation_file.write("nbmatches;nbballs;delay;cpudata;total_time;internal_time\n")
 
-	evaluation_file = open("../benchmark-jason-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXTOKENSLOG, BASE**MAXHOPSLOG), "w")
-	evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
-
-	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
-		nbagents = BASE**i
-		for j in range(1, MAXTOKENSLOG + 1, 1): # iterating over numbers of tokens
-			nbtokens = BASE**j
-			for z in range(1, MAXHOPSLOG + 1, 1): # iterating over numbers of consumptions
-				nbhops = BASE**z
-
-				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
-					generate_meta(nbagents, nbtokens, nbhops)
-					cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbhops)), "threadring_with_distributor.mas2j")
-					evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbhops) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+	for i in range(1, MAXMATCHESLOG + 1, 1):  # iterating over numbers of agents
+		nbmatches = BASE ** i
+		for j in range(1, MAXBALLSLOG + 1, 1):  # iterating over numbers of tokens
+			nbballs = BASE ** j
+			for z in range(1, MAXDELAYLOG + 1, 1):  # iterating over numbers of tokens
+				delay = BASE ** z
+				for w in range(REPETITIONS):  # 10 executions to compute average and std_deviation
+					generate_meta(nbmatches, nbballs, delay)
+					cpudata, total_time, internal_time = run_test(
+						"M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)), "input.json")
+					evaluation_file.write(
+						str(nbmatches) + ";" + str(nbballs) + ";" + str(delay) + ";" + str(cpudata) + ";" + str(
+							total_time) + ";" + str(internal_time) + "\n")
 
 	evaluation_file.close()
 
 
 if __name__ == "__main__":
 	import sys
+
 	if len(sys.argv) == 1:
-		print("Usage: single [NBAGENTS] [NBTOKENS] [NBHOPS]")
-		print("Usage for iteration: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
+		print("Usage: single [NBMATCHES] [NBBALLS] [DELAY]")
+		print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
+
 	elif sys.argv[1] == "single":
 		if len(sys.argv) != 5:
-			print("Usage: single [NBAGENTS] [NBTOKENS] [NBHOPS]")
+			print("Usage: single [NBMATCHES] [NBBALLS] [DELAY]")
 		else:
-			nbagents = int(sys.argv[2])
-			nbtokens = int(sys.argv[3])
-			nbhops = int(sys.argv[4])
-			cpudata, total_time, internal_time = run_test(nbagents, nbtokens, nbhops)
+			nbmatches = int(sys.argv[2])
+			nbballs = int(sys.argv[3])
+			delay = int(sys.argv[4])
+			generate_meta(nbmatches, nbballs, delay)
+			cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)),
+														  "pingpong.mas2j")
 			print("CPU data: %s" % str(cpudata))
 			print("Total time: %s" % str(total_time))
 			print("Internal time: %s" % str(internal_time))
 	else:
 		if len(sys.argv) != 6:
-			print("Usage: [BASE] [MAXAGENTSLOG] [MAXTOKENSLOG] [MAXHOPSLOG] [REPETITIONS]")
+			print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
 		else:
-			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
-
+			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))

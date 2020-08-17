@@ -2,12 +2,12 @@
   "agents": [
     {
       "name" : "cham",
-      "script_file" : "cham.asl",
-      "number": 500
+      "script_file" : "cham.ascript",
+      "number": __NBAGENTS__
     } ,
     {
       "name" : "broker",
-      "script_file" : "broker.asl",
+      "script_file" : "broker.ascript",
       "number": 1
     }
   ]

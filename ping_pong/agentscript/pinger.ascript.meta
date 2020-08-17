@@ -1,0 +1,40 @@
+// parameters --
+// number of matchs: __NBMATCHES__
+// number of balls: __NBBALLS__
+// delay: __DELAY__
+
+ended(0).
+terminated(0).
+t_total(__NBBALLS__).
+m_total(__NBMATCHES__).
+
+!init.
+
++!init : t_total(T) =>
+    #println("start at:");
+    #println(#System.currentTimeMillis());
+    N = "ponger" + #executionContext.name.replaceAll("pinger","");
+    for(I in between(1,T,I)) {
+          W = #math.random() * __DELAY__;
+          #achieve(N, pong(W));
+        }
+   .
+
+@atomic
++!finished : ended(I) && t_total(T) =>
+    if (T == I + 1) {
+        #achieve("pinger1", terminate);
+    };
+    -ended(I);
+    +ended(I + 1);
+    #println(I + 1).
+
+@atomic
++!terminate : terminated(I) && m_total(M) =>
+    if (M == I + 1) {
+        #println("done at:");
+        #println(#System.currentTimeMillis());
+        #std.coms.exit();
+    };
+    -terminated(I);
+    +terminated(I+1).

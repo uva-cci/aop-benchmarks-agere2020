@@ -3,7 +3,7 @@
 rm -rf *.csv
 echo "################ AgentScript ###############################"
 cd agentscript || exit
-rm -rf W*
+rm -rf C*
 rm -rf *.csv
 cd ..
 echo "################ Transpiled AgentScript ####################"
@@ -20,6 +20,6 @@ rm -rf *.csv
 cd ..
 echo "################ JASON #####################################"
 cd jason || exit
-rm -rf W*
+rm -rf C*
 rm -rf *.csv
 cd ..

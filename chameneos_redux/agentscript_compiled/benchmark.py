@@ -8,22 +8,24 @@ import glob, os, shutil
 import re
 
 SCALAJAR_PATH = None
-for path in ["/home/mostafa/benchmark/token_ring/agentscript_compiled/exec", "/Users/giovanni/dev/benchmark/token_ring/agentscript_compiled/exec"]:
+for path in ["/home/mostafa/benchmark/chameneos_redux/agentscript_compiled/exec", "/Users/giovanni/dev/benchmark/chameneos_redux/agentscript_compiled/exec"]:
 	if os.path.isdir(path):
 		SCALAJAR_PATH = path
 
 if SCALAJAR_PATH is None:
 	raise RuntimeError("Not valid scala jar path")
 
-def run_test(nbagents, nbtokens, nbhops):
+def run_test(nbagents, nbmeetings):
 
-	print("starting test: Workers: %s, Tokens: %s, Hops: %s" % (nbagents, nbtokens, nbhops))
+	print("starting test: Chameneos: %s, Meetings: %s" % (nbagents, nbmeetings))
 
 	cpu_data = None
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	command = ["java", "-cp", SCALAJAR_PATH+"/grounds_benchmarks.jar", "benchmark.Token_ring", str(nbtokens), str(nbagents), str(nbhops)]
+	command = ["java", "-cp", SCALAJAR_PATH +"/grounds_benchmarks.jar", "benchmark.Chameneos", str(nbmeetings), str(nbagents)]
+
+	print("command: %s" % (" ".join(command)))
 
 	try:
 		output = subprocess.run(command, capture_output=True, timeout=60)
@@ -79,21 +81,19 @@ def run_test(nbagents, nbtokens, nbhops):
 
 # ------------ main
 
-def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
+def main(BASE, MAXAGENTSLOG, MAXMEETINGSLOG, REPETITIONS):
 
-	evaluation_file = open("../benchmark-agentscript_compiled-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXTOKENSLOG, BASE**MAXHOPSLOG), "w")
-	evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
+	evaluation_file = open("../benchmark-agentscript_compiled-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXMEETINGSLOG), "w")
+	evaluation_file.write("nbagents;nbmeetings;cpudata;total_time;internal_time\n")
 
 	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
 		nbagents = BASE**i
-		for j in range(1, MAXTOKENSLOG + 1, 1): # iterating over numbers of tokens
-			nbtokens = BASE**j
-			for z in range(1, MAXHOPSLOG + 1, 1): # iterating over numbers of consumptions
-				nbhops = BASE**z
+		for j in range(1, MAXMEETINGSLOG + 1, 1): # iterating over numbers of tokens
+			nbmeetings = BASE**j
 
-				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
-					cpudata, total_time, internal_time = run_test(nbagents, nbtokens, nbhops)
-					evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbhops) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+			for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
+				cpudata, total_time, internal_time = run_test(nbagents, nbmeetings)
+				evaluation_file.write(str(nbagents) + ";" + str(nbmeetings) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 
 	evaluation_file.close()
 
@@ -101,21 +101,21 @@ def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 if __name__ == "__main__":
 	import sys
 	if len(sys.argv) == 1:
-		print("Usage: single [NBAGENTS] [NBTOKENS] [NBHOPS]")
+		print("Usage: single [NBAGENTS] [NBMEETINGS]")
 		print("Usage for iteration: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
+
 	elif sys.argv[1] == "single":
-		if len(sys.argv) != 5:
-			print("Usage: single [NBAGENTS] [NBTOKENS] [NBHOPS]")
+		if len(sys.argv) != 4:
+			print("Usage: single [NBAGENTS] [NBMEETINGS]")
 		else:
 			nbagents = int(sys.argv[2])
-			nbtokens = int(sys.argv[3])
-			nbhops = int(sys.argv[4])
-			cpudata, total_time, internal_time = run_test(nbagents, nbtokens, nbhops)
+			nbmeetings = int(sys.argv[3])
+			cpudata, total_time, internal_time = run_test(nbagents, nbmeetings)
 			print("CPU data: %s" % str(cpudata))
 			print("Total time: %s" % str(total_time))
 			print("Internal time: %s" % str(internal_time))
 	else:
-		if len(sys.argv) != 6:
-			print("Usage: [BASE] [MAXAGENTSLOG] [MAXTOKENSLOG] [MAXHOPSLOG] [REPETITIONS]")
+		if len(sys.argv) != 5:
+			print("Usage: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
 		else:
-			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
+			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))

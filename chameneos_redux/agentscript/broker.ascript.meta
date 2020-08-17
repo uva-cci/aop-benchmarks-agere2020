@@ -1,6 +1,15 @@
-nb_meetings(1000).
+// parameters --
+// number of meetings: __NBMEETINGS__
+// number of agents: __NBAGENTS__
+
+nb_meetings(__NBMEETINGS__).
 nb_ready(0).
-nb_chams(500).
+nb_chams(__NBAGENTS__).
+
+!init.
++!init =>
+    #println("start at: ");
+    #println(#System.currentTimeMillis()).
 
 @atomic
 +!ready : nb_ready(N) && nb_chams(N1) =>
@@ -35,7 +44,7 @@ nb_chams(500).
 @atomic
 +!done : nb_chams(T) =>
     if(T == 1) {
-        #println("done at:");
+        #println("done at: ");
         #println(#System.currentTimeMillis());
         #std.coms.exit();
     };
