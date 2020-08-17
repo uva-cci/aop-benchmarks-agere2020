@@ -59,6 +59,8 @@ def generate_meta(nbagents, nbtokens, nbhops, clean=True):
 
 def run_test(path, filename):
 
+	print("run test: %s" % (path + "/" + filename))
+
 	if not filename.endswith(".mas2j"):
 		raise RuntimeError("wrong filename: %s" % filename)
 

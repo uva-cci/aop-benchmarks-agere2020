@@ -56,7 +56,7 @@ def generate_meta(nbagents, nbmeetings, clean=True):
 
 def run_test(path, filename):
 
-	print("run test: Chameneos: %s, Meetings: %s" % (nbagents, nbmeetings))
+	print("run test: %s" % (path + "/" + filename))
 
 	if not filename.endswith(".json"):
 		raise RuntimeError("wrong filename: %s" % filename)

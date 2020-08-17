@@ -28,22 +28,22 @@ fi
 
 echo "################ AgentScript with transpilation ############"
 cd agentscript || exit
-# python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5 || exit
+# python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
 echo "skipped"
 cd ..
 echo "################ Transpiled AgentScript ####################"
 cd agentscript_compiled || exit
-python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5 || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
 cd ..
 echo "################ SARL ######################################"
 cd sarl || exit
-python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5 || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
 cd ..
 echo "################ ASTRA #####################################"
 cd astra || exit
-python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5 || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
 cd ..
 echo "################ JASON #####################################"
 cd jason || exit
-python3 benchmark.py $arg1 $arg2 $arg3 $arg4 $arg5 || exit
+python3 benchmark.py $arg1 $arg2 $arg3 $arg4 || exit
 cd ..
