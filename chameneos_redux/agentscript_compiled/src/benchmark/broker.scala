@@ -40,6 +40,9 @@ package benchmark
             case SubGoalMessage(_,_,_,r) =>
                message.goal match {
 
+               case broker.init =>
+                    broker.init.execute(message.params.asInstanceOf[broker.init.Parameters])
+
                case broker.ready =>
                     broker.ready.execute(message.params.asInstanceOf[broker.ready.Parameters])
 
@@ -70,6 +73,9 @@ package benchmark
          var vars = VarMap()
 
          def initGoals()(implicit executionContext: ExecutionContext) = List[StructTerm](
+                     StructTerm("init",Seq[GenericTerm](  ))
+
+
          )
 
          def initBeliefs()(implicit executionContext: ExecutionContext) = List[StructTerm](
@@ -82,7 +88,10 @@ package benchmark
          )
 
          def create_goal_message(t: StructTerm,r:String,ref:ActorRef[IMessage]) : Option[SubGoalMessage] = {
-             if(t.functor=="ready" && t.terms.size == 0 ) {
+             if(t.functor=="init" && t.terms.size == 0 ) {
+                                                        val args : init.Parameters = if(t.terms.size == 0)  init.Parameters(List( )) else init.Parameters(t.terms.toList)
+                                                         Option(SubGoalMessage(init, args,r,ref))
+                                                    } else if(t.functor=="ready" && t.terms.size == 0 ) {
                                                         val args : ready.Parameters = if(t.terms.size == 0)  ready.Parameters(List( )) else ready.Parameters(t.terms.toList)
                                                          Option(SubGoalMessage(ready, args,r,ref))
                                                     } else if(t.functor=="meet" && t.terms.size == 1 ) {
@@ -189,6 +198,46 @@ package benchmark
                }
              }
      }
+
+      object init extends IGoal {
+         case class Parameters(l_params: List[GenericTerm]) extends IParams {}
+
+        def execute(params: Parameters) (implicit executionContext: ExecutionContext) : Unit = {
+         var vars = VarMap()
+                 //plan 0 start
+
+                         vars.clear()
+                         val m0 = executionContext.beliefBase.matchTerms(/* StructTerm("init",Seq[GenericTerm]()) All vars no need to check */);
+
+                        if(m0.result)
+                         {
+                         m0.bindings foreach { case (k, v) => vars += (k -> v.asInstanceOf[GenericTerm]) }
+
+                         val r0 = executionContext.beliefBase.query()
+
+                         if (r0.result) {
+                             r0.bindings foreach { case (k, v) => vars += (k -> v.asInstanceOf[GenericTerm]) }
+                             plan0(vars)
+                             return
+                         }
+
+                          }
+                          // plan 0
+
+
+        }
+
+
+                      def plan0(vars: VarMap)(implicit executionContext: ExecutionContext): Unit = {
+
+                                          PrimitiveAction.execute(PrimitiveAction.Parameters(() => println(StringTerm("start at:"))))
+                                          PrimitiveAction.execute(PrimitiveAction.Parameters(() => println(System.currentTimeMillis())))
+
+
+                     }
+
+
+      }
 
       object ready extends IGoal {
          case class Parameters(l_params: List[GenericTerm]) extends IParams {}
