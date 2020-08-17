@@ -29,11 +29,11 @@ def make_dir(path):
 		except OSError as e:
 			raise RuntimeError("error in creating directory: %s -- %s" % (path, e.strerror))
 
-def generate_meta(nbagents, nbtokens, nbhops, clean=True):
+def generate_meta(nbagents, nbmeetings, clean=True):
 
-	print("generating test: Workers: %s, Tokens: %s, Consumptions: %s" % (nbagents, nbtokens, nbhops))
+	print("generating test: Chameneos: %s, Meetings: %s" % (nbagents, nbmeetings))
 
-	path = "W%s_T%s_C%s" % (nbagents, nbtokens, nbhops)
+	path = "C%s_M%s" % (nbagents, nbmeetings)
 
 	if clean:
 		remove_dir(path)
@@ -49,8 +49,7 @@ def generate_meta(nbagents, nbtokens, nbhops, clean=True):
 		for line in fin:
 			fout.write(line
 					   .replace('__NBAGENTS__', str(nbagents))
-					   .replace('__NBTOKENS__', str(nbtokens))
-					   .replace('__NBHOPS__', str(nbhops)))
+					   .replace('__NBMEETINGS__', str(nbmeetings)))
 		fin.close()
 		fout.close()
 
@@ -64,7 +63,7 @@ def run_test(path, filename):
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	command = ["java", "-cp", SCRIPTCC_PATH+"/grounds-assembly-0.1.0-SNAPSHOT.jar", "scriptcc.Main", path+"/"+filename]
+	command = ["java", "-cp", SCRIPTCC_PATH+"/grounds-assembly-0.1.0-SNAPSHOT.jar:cham_data_test-1.0.jar", "scriptcc.Main", path+"/"+filename]
 
 	try:
 		output = subprocess.run(command, capture_output=True, timeout=60)
@@ -109,29 +108,38 @@ def run_test(path, filename):
 
 # ------------ main
 
-def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
+def main(BASE, MAXAGENTSLOG, MAXMEETINGSLOG, REPETITIONS):
 
-	evaluation_file = open("../benchmark-agentscript-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXAGENTSLOG, BASE**MAXHOPSLOG), "w")
-	evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
+	evaluation_file = open("../benchmark-agentscript-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXMEETINGSLOG), "w")
+	evaluation_file.write("nbagents;nbmeetings;cpudata;total_time;internal_time\n")
 
 	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
 		nbagents = BASE**i
-		for j in range(1, MAXTOKENSLOG + 1, 1): # iterating over numbers of tokens
-			nbtokens = BASE**j
-			for z in range(1, MAXHOPSLOG + 1, 1): # iterating over numbers of consumptions
-				nbhops = BASE**z
-
-				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
-					generate_meta(nbagents, nbtokens, nbhops)
-					cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbhops)), "input.json.meta")
-					evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbhops) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+		for j in range(1, MAXMEETINGSLOG + 1, 1): # iterating over numbers of tokens
+			nbmeetings = BASE**j
+			for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
+				generate_meta(nbagents, nbmeetings)
+				cpudata, total_time, internal_time = run_test("C%s_M%s" % (str(nbagents), str(nbmeetings)), "input.json.meta")
+				evaluation_file.write(str(nbagents) + ";" + str(nbmeetings) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 	
 	evaluation_file.close()
 
 
 if __name__ == "__main__":
 	import sys
-	if len(sys.argv) != 6:
-		print("Usage: [BASE] [MAXAGENTSLOG] [MAXTOKENSLOG] [MAXHOPSLOG] [REPETITIONS]")
+	if sys.argv[1] == "single":
+		if len(sys.argv) != 4:
+			print("Usage: single [NBAGENTS] [NBMEETINGS]")
+		else:
+			nbagents = int(sys.argv[2])
+			nbmeetings = int(sys.argv[3])
+			generate_meta(nbagents, nbmeetings)
+			cpudata, total_time, internal_time = run_test("C%s_M%s" % (str(nbagents), str(nbmeetings)), "input.json.meta")
+			print("CPU data: %s" % str(cpudata))
+			print("Total time: %s" % str(total_time))
+			print("Internal time: %s" % str(internal_time))
 	else:
-		main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
+		if len(sys.argv) != 6:
+			print("Usage: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
+		else:
+			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
