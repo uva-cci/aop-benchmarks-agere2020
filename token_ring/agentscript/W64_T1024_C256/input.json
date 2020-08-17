@@ -1,0 +1,14 @@
+{
+  "agents": [
+    {
+      "name" : "thread",
+      "script_file" : "thread.ascript",
+      "number": 64
+    } ,
+    {
+      "name" : "master",
+      "script_file" : "master.ascript",
+      "number": 1
+    }
+  ]
+}
