@@ -79,7 +79,7 @@ evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time
 
 def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 
-	evaluation_file = open("../benchmark-astra-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXAGENTSLOG, BASE**MAXHOPSLOG), "w")
+	evaluation_file = open("../benchmark-astra-%d-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXTOKENSLOG, BASE**MAXHOPSLOG), "w")
 	evaluation_file.write("nbagents;nbtokens;nbhops;cpudata;total_time;internal_time\n")
 
 	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
@@ -98,7 +98,23 @@ def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 
 if __name__ == "__main__":
 	import sys
-	if len(sys.argv) != 6:
-		print("Usage: [BASE] [MAXAGENTSLOG] [MAXTOKENSLOG] [MAXHOPSLOG] [REPETITIONS]")
+	if len(sys.argv) == 1:
+		print("Usage: single [NBAGENTS] [NBTOKENS] [NBHOPS]")
+		print("Usage for iteration: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
+	elif sys.argv[1] == "single":
+		if len(sys.argv) != 5:
+			print("Usage: single [NBAGENTS] [NBTOKENS] [NBHOPS]")
+		else:
+			nbagents = int(sys.argv[2])
+			nbtokens = int(sys.argv[3])
+			nbhops = int(sys.argv[4])
+			cpudata, total_time, internal_time = run_test(nbagents, nbtokens, nbhops)
+			print("CPU data: %s" % str(cpudata))
+			print("Total time: %s" % str(total_time))
+			print("Internal time: %s" % str(internal_time))
 	else:
-		main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
+		if len(sys.argv) != 6:
+			print("Usage: [BASE] [MAXAGENTSLOG] [MAXTOKENSLOG] [MAXHOPSLOG] [REPETITIONS]")
+		else:
+			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
+

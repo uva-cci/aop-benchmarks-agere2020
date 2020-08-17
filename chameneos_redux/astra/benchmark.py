@@ -95,7 +95,7 @@ if __name__ == "__main__":
 	import sys
 	if len(sys.argv) == 1:
 		print("Usage: single [NBAGENTS] [NBMEETINGS]")
-		print("Usage for interation: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
+		print("Usage for iteration: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
 
 	elif sys.argv[1] == "single":
 		if len(sys.argv) != 4:
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 			print("Total time: %s" % str(total_time))
 			print("Internal time: %s" % str(internal_time))
 	else:
-		if len(sys.argv) != 6:
+		if len(sys.argv) != 5:
 			print("Usage: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
 		else:
 			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
