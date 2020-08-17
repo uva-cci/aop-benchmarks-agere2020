@@ -3,12 +3,12 @@
     {
       "name" : "pinger",
       "script_file" : "pinger.asl",
-      "number": 1
+      "number": __NBMATCHS__
     } ,
     {
       "name" : "ponger",
       "script_file" : "ponger.asl",
-      "number": 1
+      "number": __NBMATCHS__
     }
   ]
 }
