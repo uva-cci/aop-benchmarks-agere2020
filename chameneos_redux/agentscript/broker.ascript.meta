@@ -1,6 +1,10 @@
-nb_meetings(1000).
+// parameters --
+// number of meetings: __NBMEETINGS__
+// number of agents: __NBAGENTS__
+
+nb_meetings(__NBMEETINGS__).
 nb_ready(0).
-nb_chams(500).
+nb_chams(__NBAGENTS__).
 
 @atomic
 +!ready : nb_ready(N) && nb_chams(N1) =>
