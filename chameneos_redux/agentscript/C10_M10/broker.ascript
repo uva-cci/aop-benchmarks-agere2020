@@ -1,14 +1,14 @@
 // parameters --
 // number of meetings: 10
-// number of agents: 100
+// number of agents: 10
 
 nb_meetings(10).
 nb_ready(0).
-nb_chams(100).
+nb_chams(10).
 
 !init.
 +!init =>
-    #println("start at:");
+    #print("start at: ");
     #println(#System.currentTimeMillis()).
 
 @atomic
@@ -44,7 +44,7 @@ nb_chams(100).
 @atomic
 +!done : nb_chams(T) =>
     if(T == 1) {
-        #println("done at:");
+        #print("done at: ");
         #println(#System.currentTimeMillis());
         #std.coms.exit();
     };

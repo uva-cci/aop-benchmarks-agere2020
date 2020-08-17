@@ -8,7 +8,7 @@ nb_chams(__NBAGENTS__).
 
 !init.
 +!init =>
-    #println("start at:");
+    #print("start at: ");
     #println(#System.currentTimeMillis()).
 
 @atomic
@@ -44,7 +44,7 @@ nb_chams(__NBAGENTS__).
 @atomic
 +!done : nb_chams(T) =>
     if(T == 1) {
-        #println("done at:");
+        #print("done at: ");
         #println(#System.currentTimeMillis());
         #std.coms.exit();
     };
