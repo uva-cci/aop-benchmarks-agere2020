@@ -3,7 +3,7 @@
     {
       "name" : "cham",
       "script_file" : "cham.ascript",
-      "number": __NBAGENTS__
+      "number": 100
     } ,
     {
       "name" : "broker",

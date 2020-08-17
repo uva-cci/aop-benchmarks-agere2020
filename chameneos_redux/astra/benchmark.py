@@ -15,16 +15,16 @@ for path in ["/home/mostafa/benchmark/chameneos_redux/astra/exec", "/Users/giova
 if ASTRAJAR_PATH is None:
 	raise RuntimeError("Not valid astra jar path")
 
-def run_test(nbagents, nbtokens):
+def run_test(nbagents, nbmeetings):
 
-	print("starting test: Chameneos: %s, Meetings: %s" % (nbagents, nbtokens))
+	print("starting test: Chameneos: %s, Meetings: %s" % (nbagents, nbmeetings))
 
 	cpu_data = None
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
 
-	command = ["java", "-jar", ASTRAJAR_PATH+"/ASTRA_chameneos.jar", str(nbtokens), str(nbagents)]
+	command = ["java", "-jar", ASTRAJAR_PATH +"/ASTRA_chameneos.jar", str(nbmeetings), str(nbagents)]
 
 	try:
 		output = subprocess.run(command, capture_output=True, timeout=60)

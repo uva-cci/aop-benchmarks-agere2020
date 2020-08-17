@@ -1,10 +1,10 @@
 // parameters --
-// number of meetings: __NBMEETINGS__
-// number of agents: __NBAGENTS__
+// number of meetings: 10
+// number of agents: 100
 
-nb_meetings(__NBMEETINGS__).
+nb_meetings(10).
 nb_ready(0).
-nb_chams(__NBAGENTS__).
+nb_chams(100).
 
 !init.
 +!init =>
