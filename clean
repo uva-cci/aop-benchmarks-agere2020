@@ -1,0 +1,15 @@
+#!/bin/bash
+
+rm -rf *.csv
+echo "################ Chameneos Redux ###############################"
+cd chameneos_redux || exit
+./clean
+cd ..
+echo "################ Token Ring ####################################"
+cd token_ring || exit
+./clean
+cd ..
+echo "################ Ping Pong #####################################"
+cd ping_pong || exit
+./clean
+cd ..

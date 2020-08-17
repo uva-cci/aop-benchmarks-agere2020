@@ -18,16 +18,14 @@ t_total(1).
         }
    .
 
-   !init.
-
 @atomic
-+!completed : ended(I) && t_total(T) =>
-    -ended(I);
-    +ended(I + 1);
-    if(T == I) {
++!finished : ended(I) && t_total(T) =>
+    if(T == I + 1) {
         #println("done at:");
         #println(#System.currentTimeMillis());
         #std.coms.exit();
-    }
+    };
+    -ended(I);
+    +ended(I + 1)
 .
 

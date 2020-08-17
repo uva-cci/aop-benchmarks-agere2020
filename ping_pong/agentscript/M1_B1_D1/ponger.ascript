@@ -5,9 +5,10 @@
     +neighbour(N).
 
 +!pong(D) : neighbour(N) =>
+        #println(N);
         #println("start waiting");
         #wait_actions.actions.waitForSomeTime(#asDouble(D));
-        #achieve(N, completed)
+        #achieve(N, finished)
 .
 
 
