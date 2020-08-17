@@ -3,11 +3,11 @@
 rm -rf *.csv
 echo "################ AgentScript ###############################"
 cd agentscript || exit
-rm -rf C*
+rm -rf M*
 rm -rf *.csv
 cd ..
 echo "################ JASON #####################################"
 cd jason || exit
-rm -rf C*
+rm -rf M*
 rm -rf *.csv
 cd ..
