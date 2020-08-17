@@ -29,11 +29,11 @@ def make_dir(path):
 		except OSError as e:
 			raise RuntimeError("error in creating directory: %s -- %s" % (path, e.strerror))
 
-def generate_meta(nbagents, nbmeetings, clean=True):
+def generate_meta(nbmatches, nbballs, delay, clean=True):
 
-	print("generating test: Chameneos: %s, Meetings: %s" % (nbagents, nbmeetings))
+	print("generating test: Matches: %s, Balls: %s, Delay: %s" % (nbmatches, nbballs, delay))
 
-	path = "C%s_M%s" % (nbagents, nbmeetings)
+	path = "M%s_B%s_D%s" % (nbmatches, nbballs, delay)
 
 	if clean:
 		remove_dir(path)
@@ -48,15 +48,16 @@ def generate_meta(nbagents, nbmeetings, clean=True):
 		fout = open(path + "/" + file.replace(".meta", ""), "wt")
 		for line in fin:
 			fout.write(line
-					   .replace('__NBAGENTS__', str(nbagents))
-					   .replace('__NBMEETINGS__', str(nbmeetings)))
+					   .replace('__NBMATCHES__', str(nbmatches))
+					   .replace('__NBBALLS__', str(nbballs))
+					   .replace('__DELAY__', str(delay)))
 		fin.close()
 		fout.close()
 
 
 def run_test(path, filename):
 
-	print("run test: Chameneos: %s, Meetings: %s" % (nbagents, nbmeetings))
+	print("run test: %s" % (path + "/" + filename))
 
 	if not filename.endswith(".json"):
 		raise RuntimeError("wrong filename: %s" % filename)
@@ -65,7 +66,7 @@ def run_test(path, filename):
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	command = ["java", "-cp", SCRIPTCC_PATH+"/grounds-assembly-0.1.0-SNAPSHOT.jar:cham_data_test-1.0.jar", "scriptcc.Main", path+"/"+filename]
+	command = ["java", "-cp", SCRIPTCC_PATH+"/grounds-assembly-0.1.0-SNAPSHOT.jar:./waiting_actions.jar", "scriptcc.Main", path+"/"+filename]
 
 	print("command: %s" % (" ".join(command)))
 
@@ -123,19 +124,21 @@ def run_test(path, filename):
 
 # ------------ main
 
-def main(BASE, MAXAGENTSLOG, MAXMEETINGSLOG, REPETITIONS):
+def main(BASE, MAXMATCHESLOG, MAXBALLSLOG, MAXDELAYLOG, REPETITIONS):
 
-	evaluation_file = open("../benchmark-agentscript-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXMEETINGSLOG), "w")
-	evaluation_file.write("nbagents;nbmeetings;cpudata;total_time;internal_time\n")
+	evaluation_file = open("../benchmark-agentscript-%d-%d-%d.csv" % (BASE**MAXMATCHESLOG, BASE**MAXBALLSLOG, MAXDELAYLOG), "w")
+	evaluation_file.write("nbmatches;nbballs;delay;cpudata;total_time;internal_time\n")
 
-	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
-		nbagents = BASE**i
-		for j in range(1, MAXMEETINGSLOG + 1, 1): # iterating over numbers of tokens
-			nbmeetings = BASE**j
-			for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
-				generate_meta(nbagents, nbmeetings)
-				cpudata, total_time, internal_time = run_test("C%s_M%s" % (str(nbagents), str(nbmeetings)), "input.json")
-				evaluation_file.write(str(nbagents) + ";" + str(nbmeetings) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+	for i in range(1, MAXMATCHESLOG + 1, 1): # iterating over numbers of agents
+		nbmatches = BASE**i
+		for j in range(1, MAXBALLSLOG + 1, 1): # iterating over numbers of tokens
+			nbballs = BASE**j
+			for z in range(1, MAXDELAYLOG + 1, 1):  # iterating over numbers of tokens
+				delay = BASE**z
+				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
+					generate_meta(nbmatches, nbballs, delay)
+					cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)), "input.json")
+					evaluation_file.write(str(nbmatches) + ";" + str(nbballs) + ";" + str(delay) + ";"  + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 	
 	evaluation_file.close()
 
@@ -144,22 +147,23 @@ if __name__ == "__main__":
 	import sys
 
 	if len(sys.argv) == 1:
-		print("Usage: single [NBAGENTS] [NBMEETINGS]")
-		print("Usage for iteration: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
+		print("Usage: single [NBMATCHES] [NBBALLS] [DELAY]")
+		print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
 
 	elif sys.argv[1] == "single":
-		if len(sys.argv) != 4:
-			print("Usage: single [NBAGENTS] [NBMEETINGS]")
+		if len(sys.argv) != 5:
+			print("Usage: single [NBMATCHES] [NBBALLS] [DELAY]")
 		else:
-			nbagents = int(sys.argv[2])
-			nbmeetings = int(sys.argv[3])
-			generate_meta(nbagents, nbmeetings)
-			cpudata, total_time, internal_time = run_test("C%s_M%s" % (str(nbagents), str(nbmeetings)), "input.json")
+			nbmatches = int(sys.argv[2])
+			nbballs = int(sys.argv[3])
+			delay = int(sys.argv[4])
+			generate_meta(nbmatches, nbballs, delay)
+			cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)), "input.json")
 			print("CPU data: %s" % str(cpudata))
 			print("Total time: %s" % str(total_time))
 			print("Internal time: %s" % str(internal_time))
 	else:
-		if len(sys.argv) != 5:
-			print("Usage: [BASE] [MAXAGENTSLOG] [MAXMEETINGSLOG] [REPETITIONS]")
+		if len(sys.argv) != 6:
+			print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
 		else:
 			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))

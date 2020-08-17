@@ -1,5 +1,5 @@
 // parameters --
-// number of agents: __NBAGENTS__ 
+// number of matches: __1__
 
 MAS ping_pong {
     infrastructure: Centralised(pool,8)

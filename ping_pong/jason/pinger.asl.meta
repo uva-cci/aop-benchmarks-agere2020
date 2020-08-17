@@ -1,0 +1,28 @@
+// parameters --
+// number of matchs: __NBMATCHES__
+// number of balls: __NBBALLS__
+// delay: __DELAY__
+
+ended(0).
+t_total(__NBBALLS__).
+
+!init.
+
++!init : t_total(T) & .my_name(M) &
+             .delete("pinger", M, NS) &
+             .concat("ponger", NS, N) <-
+    Time = system.time;
+    .print("start at: ", Time);
+    for ( .range(I,1,T) ) {
+        W = math.random(__DELAY__);
+        .send(N, achieve, pong(W));
+    }.
+
+@lm[atomic]
++!finished : ended(I) & t_total(T) & T > I + 1 <-
+    -+ended(I+1).
+
++!finished <-
+    Time = system.time;
+    .print("done at: ", Time);
+    .stopMAS.

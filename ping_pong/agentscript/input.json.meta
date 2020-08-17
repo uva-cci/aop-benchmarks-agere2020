@@ -1,0 +1,14 @@
+{
+  "agents": [
+    {
+      "name" : "pinger",
+      "script_file" : "pinger.ascript",
+      "number": __NBMATCHES__
+    } ,
+    {
+      "name" : "ponger",
+      "script_file" : "ponger.ascript",
+      "number": __NBMATCHES__
+    }
+  ]
+}

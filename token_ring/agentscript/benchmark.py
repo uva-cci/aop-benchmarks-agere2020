@@ -123,7 +123,7 @@ def main(BASE, MAXAGENTSLOG, MAXTOKENSLOG, MAXHOPSLOG, REPETITIONS):
 
 				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
 					generate_meta(nbagents, nbtokens, nbhops)
-					cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbhops)), "input.json")
+					cpudata, total_time, internal_time = run_test("W%s_T%s_C%s" % (str(nbagents), str(nbtokens), str(nbhops)), "input.json.meta")
 					evaluation_file.write(str(nbagents) + ";" + str(nbtokens) + ";" + str(nbhops) + ";" + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 	
 	evaluation_file.close()
