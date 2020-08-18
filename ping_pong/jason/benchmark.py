@@ -131,7 +131,7 @@ def main(BASE, MAXMATCHESLOG, MAXBALLSLOG, MAXDELAYLOG, REPETITIONS):
 				for w in range(REPETITIONS):  # 10 executions to compute average and std_deviation
 					generate_meta(nbmatches, nbballs, delay)
 					cpudata, total_time, internal_time = run_test(
-						"M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)), "input.json")
+						"M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)), "pingpong.mas2j")
 					evaluation_file.write(
 						str(nbmatches) + ";" + str(nbballs) + ";" + str(delay) + ";" + str(cpudata) + ";" + str(
 							total_time) + ";" + str(internal_time) + "\n")
@@ -163,4 +163,4 @@ if __name__ == "__main__":
 		if len(sys.argv) != 6:
 			print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
 		else:
-			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
+			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))

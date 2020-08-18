@@ -166,4 +166,4 @@ if __name__ == "__main__":
 		if len(sys.argv) != 6:
 			print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
 		else:
-			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))
+			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
