@@ -1,19 +1,17 @@
 // parameters --
-// number of matchs: __NBMATCHES__
+// number of matchs: __NBPINGERS__
 // number of balls: __NBBALLS__
 // delay: __DELAY__
 
 ended(0).
 terminated(0).
 t_total(__NBBALLS__).
-m_total(__NBMATCHES__).
+m_total(__NBPINGERS__).
 
 !init.
 
-+!init : t_total(T) =>
-    #println("start at:");
-    #println(#System.currentTimeMillis());
-    N = "ponger" + #executionContext.name.replaceAll("pinger","");
++!init : t_total(T) =>    
+    N = "ponger1";
     for(I in between(1,T,I)) {
           W = #math.random() * __DELAY__;
           #achieve(N, pong(W));
