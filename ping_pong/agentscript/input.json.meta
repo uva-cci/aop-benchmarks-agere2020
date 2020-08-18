@@ -3,12 +3,12 @@
     {
       "name" : "pinger",
       "script_file" : "pinger.ascript",
-      "number": __NBMATCHES__
+      "number": __NBPINGERS__
     } ,
     {
       "name" : "ponger",
       "script_file" : "ponger.ascript",
-      "number": __NBMATCHES__
+      "number": 1
     }
   ]
 }
