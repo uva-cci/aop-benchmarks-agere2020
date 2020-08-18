@@ -71,7 +71,7 @@ def run_test(path, filename):
 	print("command: %s" % (" ".join(command)))
 
 	try:
-		output = subprocess.run(command, capture_output=True, timeout=200)
+		output = subprocess.run(command, capture_output=True, timeout=500)
 		cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 		print("CPU data: " + str(cpu_data))
 		end = time.time()
