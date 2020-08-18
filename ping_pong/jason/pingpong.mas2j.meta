@@ -1,9 +1,9 @@
 // parameters --
-// number of matches: ____NBMATCHES____
+// number of pingers: __NBPINGERS__
 
 MAS ping_pong {
     infrastructure: Centralised(pool,8)
     agents:
-        pinger [verbose=0] #__NBMATCHES__;
-        ponger [verbose=0] #__NBMATCHES__;
+        pinger [verbose=0] #__NBPINGERS__;
+        ponger [verbose=0];
 }

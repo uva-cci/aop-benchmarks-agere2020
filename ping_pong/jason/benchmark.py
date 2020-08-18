@@ -29,11 +29,11 @@ def make_dir(path):
 		except OSError as e:
 			raise RuntimeError("error in creating directory: %s -- %s" % (path, e.strerror))
 
-def generate_meta(nbmatches, nbballs, delay, clean=True):
+def generate_meta(nbpingers, nbballs, delay, clean=True):
 
-	print("generating test: Matches: %s, Balls: %s, Delay: %s" % (nbmatches, nbballs, delay))
+	print("generating test: Pingers: %s, Balls: %s, Delay: %s" % (nbpingers, nbballs, delay))
 
-	path = "M%s_B%s_D%s" % (nbmatches, nbballs, delay)
+	path = "M%s_B%s_D%s" % (nbpingers, nbballs, delay)
 
 	if clean:
 		remove_dir(path)
@@ -51,7 +51,7 @@ def generate_meta(nbmatches, nbballs, delay, clean=True):
 		fout = open(path + "/" + file.replace(".meta", ""), "wt")
 		for line in fin:
 			fout.write(line
-					   .replace('__NBMATCHES__', str(nbmatches))
+					   .replace('__NBPINGERS__', str(nbpingers))
 					   .replace('__NBBALLS__', str(nbballs))
 					   .replace('__DELAY__', str(delay)))
 		fin.close()
@@ -117,23 +117,23 @@ def run_test(path, filename):
 
 # ------------ main
 
-def main(BASE, MAXMATCHESLOG, MAXBALLSLOG, MAXDELAYLOG, REPETITIONS):
+def main(BASE, MAXPINGERSLOG, MAXBALLSLOG, MAXDELAYLOG, REPETITIONS):
 	evaluation_file = open(
-		"../benchmark-jason-%d-%d-%d.csv" % (BASE ** MAXMATCHESLOG, BASE ** MAXBALLSLOG, MAXDELAYLOG), "w")
-	evaluation_file.write("nbmatches;nbballs;delay;cpudata;total_time;internal_time\n")
+		"../benchmark-jason-%d-%d-%d.csv" % (BASE ** MAXPINGERSLOG, BASE ** MAXBALLSLOG, MAXDELAYLOG), "w")
+	evaluation_file.write("nbpingers;nbballs;delay;cpudata;total_time;internal_time\n")
 
-	for i in range(1, MAXMATCHESLOG + 1, 1):  # iterating over numbers of agents
-		nbmatches = BASE ** i
+	for i in range(1, MAXPINGERSLOG + 1, 1):  # iterating over numbers of agents
+		nbpingers = BASE ** i
 		for j in range(1, MAXBALLSLOG + 1, 1):  # iterating over numbers of tokens
 			nbballs = BASE ** j
 			for z in range(1, MAXDELAYLOG + 1, 1):  # iterating over numbers of tokens
 				delay = BASE ** z
 				for w in range(REPETITIONS):  # 10 executions to compute average and std_deviation
-					generate_meta(nbmatches, nbballs, delay)
+					generate_meta(nbpingers, nbballs, delay)
 					cpudata, total_time, internal_time = run_test(
-						"M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)), "pingpong.mas2j")
+						"M%s_B%s_D%s" % (str(nbpingers), str(nbballs), str(delay)), "pingpong.mas2j")
 					evaluation_file.write(
-						str(nbmatches) + ";" + str(nbballs) + ";" + str(delay) + ";" + str(cpudata) + ";" + str(
+						str(nbpingers) + ";" + str(nbballs) + ";" + str(delay) + ";" + str(cpudata) + ";" + str(
 							total_time) + ";" + str(internal_time) + "\n")
 
 	evaluation_file.close()
@@ -143,24 +143,24 @@ if __name__ == "__main__":
 	import sys
 
 	if len(sys.argv) == 1:
-		print("Usage: single [NBMATCHES] [NBBALLS] [DELAY]")
-		print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
+		print("Usage: single [NBPINGERS] [NBBALLS] [DELAY]")
+		print("Usage for iteration: [BASE] [MAXPINGERSLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
 
 	elif sys.argv[1] == "single":
 		if len(sys.argv) != 5:
-			print("Usage: single [NBMATCHES] [NBBALLS] [DELAY]")
+			print("Usage: single [NBPINGERS] [NBBALLS] [DELAY]")
 		else:
-			nbmatches = int(sys.argv[2])
+			nbpingers = int(sys.argv[2])
 			nbballs = int(sys.argv[3])
 			delay = int(sys.argv[4])
-			generate_meta(nbmatches, nbballs, delay)
-			cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbmatches), str(nbballs), str(delay)),
+			generate_meta(nbpingers, nbballs, delay)
+			cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbpingers), str(nbballs), str(delay)),
 														  "pingpong.mas2j")
 			print("CPU data: %s" % str(cpudata))
 			print("Total time: %s" % str(total_time))
 			print("Internal time: %s" % str(internal_time))
 	else:
 		if len(sys.argv) != 6:
-			print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
+			print("Usage for iteration: [BASE] [MAXPINGERSLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
 		else:
 			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
