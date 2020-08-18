@@ -1,9 +1,0 @@
-// parameters --
-// number of pingers: 8
-
-MAS ping_pong {
-    infrastructure: Centralised(pool,8)
-    agents:
-        pinger [verbose=0] #8;
-        ponger [verbose=0];
-}
