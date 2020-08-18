@@ -1,0 +1,14 @@
+{
+  "agents": [
+    {
+      "name" : "pinger",
+      "script_file" : "pinger.ascript",
+      "number": 2
+    } ,
+    {
+      "name" : "ponger",
+      "script_file" : "ponger.ascript",
+      "number": 1
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+// parameters --
+// number of matches: __2__
+
+MAS ping_pong {
+    infrastructure: Centralised(pool,8)
+    agents:
+        pinger [verbose=0] #2;
+        ponger [verbose=0] #2;
+}

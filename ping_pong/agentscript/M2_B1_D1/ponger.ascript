@@ -1,0 +1,17 @@
+!init.
+
++!init => #println("start at:"); #println(#System.currentTimeMillis()).
++!pong(D) =>
+        
+        #println("start waiting");
+        #wait_actions.actions.waitForSomeTime(#asDouble(D));
+        #achieve(#executionContext.sender.name, finished)
+.
+
+
+
+
+
+
+
+

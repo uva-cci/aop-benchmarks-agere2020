@@ -3,12 +3,12 @@
     {
       "name" : "pinger",
       "script_file" : "pinger.ascript",
-      "number": 2
+      "number": 1
     } ,
     {
       "name" : "ponger",
       "script_file" : "ponger.ascript",
-      "number": 2
+      "number": 1
     }
   ]
 }
