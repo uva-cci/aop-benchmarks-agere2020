@@ -155,7 +155,7 @@ def draw_3_dim(y, dimension_names, feature_names):
 
 dimension_names, \
 y_cpudata_mean, y_cpudata_dev, y_total_time, y_internal_time\
-    = open_benchmark("benchmark-astra-4096-4096-4096.csv", [2,1,0])
+    = open_benchmark("benchmark-agentscript_compiled-4096-4096-4096.csv", [0,1,2])
 
 for i, name in enumerate(dimension_names):
     print("dim" + str(i+1) +": "+name)
