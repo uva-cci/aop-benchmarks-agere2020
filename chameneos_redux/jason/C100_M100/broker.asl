@@ -1,6 +1,6 @@
 // parameters --
-// number of meetings: __NBMEETINGS__
-// number of agents: __NBAGENTS__
+// number of meetings: 100
+// number of agents: 100
 
 /*
     This agent receives asks for meetings from chameneos,
@@ -8,8 +8,8 @@
     the mutation.
 */
 
-nb_meetings(__NBMEETINGS__).
-nb_chameneos(__NBAGENTS__).
+nb_meetings(100).
+nb_chameneos(100).
 ready(0).
 done(0).
 

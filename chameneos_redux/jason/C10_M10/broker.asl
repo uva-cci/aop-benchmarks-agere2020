@@ -1,6 +1,6 @@
 // parameters --
-// number of meetings: __NBMEETINGS__
-// number of agents: __NBAGENTS__
+// number of meetings: 10
+// number of agents: 10
 
 /*
     This agent receives asks for meetings from chameneos,
@@ -8,8 +8,8 @@
     the mutation.
 */
 
-nb_meetings(__NBMEETINGS__).
-nb_chameneos(__NBAGENTS__).
+nb_meetings(10).
+nb_chameneos(10).
 ready(0).
 done(0).
 
@@ -17,7 +17,7 @@ done(0).
 
 +!init <-
     Time = system.time;
-    .println("start at: ", Time).
+    .print("start at: ", Time).
 
 @lm[atomic]
 +!ready : ready(I) & nb_chameneos(T) & T > I + 1 <-
@@ -48,5 +48,5 @@ done(0).
 
 +!done <-
     Time = system.time;
-    .println("done at: ", Time);
+    .print("done at: ", Time);
     .stopMAS.
