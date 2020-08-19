@@ -1,3 +1,12 @@
+m_total(__NBPINGERS__).
+terminated(0).
+
+!init.
+
++!init <- 
+    Time = system.time;
+    .print("start at: ", Time).
+
 +!pong(D)[source(Pinger)] <-
         .concat("", D, Wait);
         .printf("start waiting");
@@ -5,3 +14,13 @@
         .printf("done waiting");
         .send(Pinger, achieve,finished)
 .
+
+
+@lm2[atomic]
++!terminate : terminated(I) & m_total(M) & M > I + 1 <-
+    -+terminated(I+1).
+
++!terminate <-
+    Time = system.time;
+    .print("done at: ", Time);
+    .stopMAS.

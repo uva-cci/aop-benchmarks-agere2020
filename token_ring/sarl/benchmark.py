@@ -8,7 +8,7 @@ import glob, os, shutil
 import re
 
 SARLJAR_PATH = None
-for path in ["/home/mostafa/benchmark/token_ring/sarl/exec", "/Users/giovanni/dev/benchmark/token_ring/sarl/exec"]:
+for path in ["/home/mostafa/benchmark/token_ring/sarl/exec", "/Users/giovanni/dev/benchmark/token_ring/sarl/exec","/home/msotafa/IdeaProjects/benchmark/token_ring/sarl/exec" ]:
 	if os.path.isdir(path):
 		SARLJAR_PATH = path
 
@@ -18,12 +18,13 @@ if SARLJAR_PATH is None:
 def run_test(nbagents, nbtokens, nbhops):
 
 	print("starting test: Workers: %s, Tokens: %s, Hops: %s" % (nbagents, nbtokens, nbhops))
-
+	
 	cpu_data = None
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
 	command = ["java", "-cp", SARLJAR_PATH+"/sarl_tokens.jar", "token_ring.Config", str(nbtokens), str(nbagents), str(nbhops)]
+	print("command: %s" % (" ".join(command)))
 	try:
 		output = subprocess.run(command, capture_output=True, timeout=60)
 		cpu_data = psutil.cpu_percent(interval=0, percpu=True)
