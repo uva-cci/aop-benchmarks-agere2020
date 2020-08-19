@@ -1,5 +1,5 @@
 // parameters --
-// number of matchs: __NBMATCHES__
+// number of pingers: __NBPINGERS__
 // number of balls: __NBBALLS__
 // delay: __DELAY__
 
@@ -14,6 +14,7 @@ t_total(__NBBALLS__).
     for ( .range(I,1,T) ) {
         W = math.random(__DELAY__);
         .send("ponger", achieve, pong(W));
+
     }.
 
 @lm[atomic]

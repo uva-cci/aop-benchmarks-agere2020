@@ -31,7 +31,7 @@ def make_dir(path):
 
 def generate_meta(nbpingers, nbballs, delay, clean=True):
 
-	print("generating test: Matches: %s, Balls: %s, Delay: %s" % (nbpingers, nbballs, delay))
+	print("generating test: Pingers: %s, Balls: %s, Delay: %s" % (nbpingers, nbballs, delay))
 
 	path = "M%s_B%s_D%s" % (nbpingers, nbballs, delay)
 
@@ -71,7 +71,7 @@ def run_test(path, filename):
 	print("command: %s" % (" ".join(command)))
 
 	try:
-		output = subprocess.run(command, capture_output=True, timeout=200)
+		output = subprocess.run(command, capture_output=True, timeout=500)
 		cpu_data = psutil.cpu_percent(interval=0, percpu=True)
 		print("CPU data: " + str(cpu_data))
 		end = time.time()
@@ -97,22 +97,29 @@ def run_test(path, filename):
 		for line in string_output.splitlines():
 			if start_found and end_found:
 				number_match = re.search(number_pattern, line)
-				end_value = int(number_match.group(1))
-				break
+				if number_match is not None:
+					print("Found end value")
+					end_value = int(number_match.group(1))
+					break
 			if start_found is False:
 				start_match = re.search(start_pattern, line)
 				if start_match is not None:
+					print("Found start")
 					start_found = True
 					number = True
 			else:
-				if number:
+				if number is True:
 					number_match = re.search(number_pattern, line)
-					start_value = int(number_match.group(1))
-					number = False
+					if number_match is not None:
+						print("Found start value")
+						start_value = int(number_match.group(1))
+						number = False
 				else:
 					end_match = re.search(end_pattern, line)
 					if end_match is not None:
+						print("Found end")
 						end_found = True
+						number = True
 
 		if start_found is False or end_found is False:
 			raise RuntimeError("Unexpected result (no or partial time signatures).")
@@ -124,21 +131,21 @@ def run_test(path, filename):
 
 # ------------ main
 
-def main(BASE, MAXMATCHESLOG, MAXBALLSLOG, MAXDELAYLOG, REPETITIONS):
+def main(BASE, MAXPINGERSLOG, MAXBALLSLOG, MAXDELAY, REPETITIONS):
 
-	evaluation_file = open("../benchmark-agentscript-%d-%d-%d.csv" % (BASE**MAXMATCHESLOG, BASE**MAXBALLSLOG, MAXDELAYLOG), "w")
+	evaluation_file = open("../benchmark-agentscript-%d-%d-%d.csv" % (BASE**MAXPINGERSLOG, BASE**MAXBALLSLOG, MAXDELAY), "w")
 	evaluation_file.write("nbpingers;nbballs;delay;cpudata;total_time;internal_time\n")
 
-	for i in range(0, MAXMATCHESLOG, 1): # iterating over numbers of agents
+	for i in range(0, MAXPINGERSLOG, 1): # iterating over numbers of agents
 		nbpingers = BASE**i
 		for j in range(0, MAXBALLSLOG, 1): # iterating over numbers of tokens
 			nbballs = BASE**j
-			#for z in range(1, MAXDELAYLOG + 1, 1):  # iterating over numbers of tokens
-			delay = MAXDELAYLOG
-			for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
-				generate_meta(nbpingers, nbballs, delay)
-				cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbpingers), str(nbballs), str(delay)), "input.json")
-				evaluation_file.write(str(nbpingers) + ";" + str(nbballs) + ";" + str(delay) + ";"  + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+			for z in range(1, MAXDELAY + 1, 1):  # iterating over numbers of tokens
+				delay = z
+				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
+					generate_meta(nbpingers, nbballs, delay)
+					cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbpingers), str(nbballs), str(delay)), "input.json")
+					evaluation_file.write(str(nbpingers) + ";" + str(nbballs) + ";" + str(delay) + ";"  + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 	
 	evaluation_file.close()
 
@@ -147,12 +154,12 @@ if __name__ == "__main__":
 	import sys
 
 	if len(sys.argv) == 1:
-		print("Usage: single [NNPINGERS] [NBBALLS] [DELAY]")
-		print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
+		print("Usage: single [NBPINGERS] [NBBALLS] [DELAY]")
+		print("Usage for iteration: [BASE] [MAXPINGERSLOG] [MAXBALLSLOG] [MAXDELAY] [REPETITIONS]")
 
 	elif sys.argv[1] == "single":
 		if len(sys.argv) != 5:
-			print("Usage: single [NNPINGERS] [NBBALLS] [DELAY]")
+			print("Usage: single [NBPINGERS] [NBBALLS] [DELAY]")
 		else:
 			nbpingers = int(sys.argv[2])
 			nbballs = int(sys.argv[3])
@@ -164,6 +171,6 @@ if __name__ == "__main__":
 			print("Internal time: %s" % str(internal_time))
 	else:
 		if len(sys.argv) != 6:
-			print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
+			print("Usage for iteration: [BASE] [MAXPINGERSLOG] [MAXBALLSLOG] [MAXDELAY] [REPETITIONS]")
 		else:
 			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))

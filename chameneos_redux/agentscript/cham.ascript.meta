@@ -38,4 +38,4 @@ complement(C, C, C).
 
 +!print_result : nb_meetings_same_color(N) && nb_meetings(N2) =>
     #println("meetings: " + N2 + " | same name: " + N);
-    #achieve("broker1",done).
+    #achieve("broker1", done).

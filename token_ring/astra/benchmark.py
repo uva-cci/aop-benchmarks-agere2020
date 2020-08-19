@@ -8,7 +8,7 @@ import glob, os, shutil
 import re
 
 ASTRAJAR_PATH = None
-for path in ["/home/mostafa/benchmark/token_ring/astra/exec", "/Users/giovanni/dev/benchmark/token_ring/astra/exec"]:
+for path in ["/home/mostafa/benchmark/token_ring/astra/exec", "/Users/giovanni/dev/benchmark/token_ring/astra/exec","/home/msotafa/IdeaProjects/benchmark/token_ring/astra/exec"]:
 	if os.path.isdir(path):
 		ASTRAJAR_PATH = path
 

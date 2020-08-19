@@ -36,7 +36,6 @@ complement(C, C, C).
    
 +!mutate(A,C2) : color(C1) & complement(C1, C2, C) & nb_meetings(N)
    <- -+nb_meetings(N+1);
-      //.println("Meet a chameneo with color ",C2,", then changing my color from ",C1," to ",C);
       .abolish(color(_));
       +color(C);
       !check_same(A);

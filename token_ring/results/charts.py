@@ -145,6 +145,7 @@ def draw_3_dim(y, dimension_names, feature_names):
                 yy_mean.append(averages[dim1][dim2][dim3])
                 yy_dev.append(stds[dim1][dim2][dim3])
 
+
             plt.title(label=feature_names[i] + " in function of " + dimension_names[2])
             plt.errorbar(xx, yy_mean, yerr=yy_dev,
                          label=dimension_names[0] + " " + dim1 + ", " + dimension_names[1] + " " + dim2, elinewidth=1,
@@ -154,17 +155,16 @@ def draw_3_dim(y, dimension_names, feature_names):
 
 dimension_names, \
 y_cpudata_mean, y_cpudata_dev, y_total_time, y_internal_time\
-    = open_benchmark("benchmark-jason-4096-4096-4096.csv", [2,1,0])
+    = open_benchmark("benchmark-astra-4096-4096-4096.csv", [2,1,0])
 
 for i, name in enumerate(dimension_names):
     print("dim" + str(i+1) +": "+name)
 
-feature_names = ["inner time (ms)", "outer time (ms)", "cpuload (%) mean", "cpuload (%) stdev"]
-for i, y in enumerate([y_internal_time]): # , y_total_time]): # , y_cpudata_mean, y_cpudata_dev]):
+feature_names = ["outer time (ms)", "inner time (ms)", "cpuload (%) mean", "cpuload (%) stdev"]
+for i, y in enumerate([ y_total_time ]): #, y_internal_time, y_cpudata_mean]): # , y_total_time]): # , y_cpudata_mean, y_cpudata_dev]):
     print("############ "+feature_names[i])
     averages, stds = compute_averages(y, 3)
     print(averages)
     print(stds)
 
     draw_3_dim(y, dimension_names, feature_names)
-

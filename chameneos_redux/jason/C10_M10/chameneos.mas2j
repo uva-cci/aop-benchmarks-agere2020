@@ -1,3 +1,6 @@
+// parameters --
+// number of agents: 10
+
 /*
 
 Chameneos is a benchmark for concurrent programs.
@@ -12,7 +15,6 @@ MAS chameneos {
 
     agents:
         broker [verbose=0];
-        chameneo   [verbose=0] #500;
-
+        chameneo   [verbose=0] #10;
 
 }

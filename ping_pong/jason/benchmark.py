@@ -31,7 +31,8 @@ def make_dir(path):
 
 def generate_meta(nbpingers, nbballs, delay, clean=True):
 
-	print("generating test: Matches: %s, Balls: %s, Delay: %s" % (nbpingers, nbballs, delay))
+
+	print("generating test: Pingers: %s, Balls: %s, Delay: %s" % (nbpingers, nbballs, delay))
 
 	path = "M%s_B%s_D%s" % (nbpingers, nbballs, delay)
 
@@ -117,7 +118,7 @@ def run_test(path, filename):
 
 # ------------ main
 
-def main(BASE, MAXMATCHESLOG, MAXBALLSLOG, MAXDELAYLOG, REPETITIONS):
+def main(BASE, MAXPINGERSLOG, MAXBALLSLOG, MAXDELAY, REPETITIONS):
 	evaluation_file = open(
 		"../benchmark-jason-%d-%d-%d.csv" % (BASE ** MAXMATCHESLOG, BASE ** MAXBALLSLOG, MAXDELAYLOG), "w")
 	evaluation_file.write("nbpingers;nbballs;delay;cpudata;total_time;internal_time\n")
@@ -143,7 +144,7 @@ if __name__ == "__main__":
 
 	if len(sys.argv) == 1:
 		print("Usage: single [NBPINGERS] [NBBALLS] [DELAY]")
-		print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
+		print("Usage for iteration: [BASE] [MAXPINGERSLOG] [MAXBALLSLOG] [MAXDELAY] [REPETITIONS]")
 
 	elif sys.argv[1] == "single":
 		if len(sys.argv) != 5:
@@ -160,6 +161,6 @@ if __name__ == "__main__":
 			print("Internal time: %s" % str(internal_time))
 	else:
 		if len(sys.argv) != 6:
-			print("Usage for iteration: [BASE] [MAXMATCHESLOG] [MAXBALLSLOG] [MAXDELAYLOG] [REPETITIONS]")
+			print("Usage for iteration: [BASE] [MAXPINGERSLOG] [MAXBALLSLOG] [MAXDELAY] [REPETITIONS]")
 		else:
 			main(int(sys.argv[1]), int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]), int(sys.argv[5]))
