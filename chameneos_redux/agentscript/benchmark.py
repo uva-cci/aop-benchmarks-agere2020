@@ -96,22 +96,29 @@ def run_test(path, filename):
 		for line in string_output.splitlines():
 			if start_found and end_found:
 				number_match = re.search(number_pattern, line)
-				end_value = int(number_match.group(1))
-				break
+				if number_match is not None:
+					print("Found end value")
+					end_value = int(number_match.group(1))
+					break
 			if start_found is False:
 				start_match = re.search(start_pattern, line)
 				if start_match is not None:
+					print("Found start")
 					start_found = True
 					number = True
 			else:
-				if number:
+				if number is True:
 					number_match = re.search(number_pattern, line)
-					start_value = int(number_match.group(1))
-					number = False
+					if number_match is not None:
+						print("Found start value")
+						start_value = int(number_match.group(1))
+						number = False
 				else:
 					end_match = re.search(end_pattern, line)
 					if end_match is not None:
+						print("Found end")
 						end_found = True
+						number = True
 
 		if start_found is False or end_found is False:
 			raise RuntimeError("Unexpected result (no or partial time signatures).")
