@@ -17,7 +17,7 @@ done(0).
 
 +!init <-
     Time = system.time;
-    .print("start at: ", Time).
+    .println("start at: ", Time).
 
 @lm[atomic]
 +!ready : ready(I) & nb_chameneos(T) & T > I + 1 <-
@@ -48,5 +48,5 @@ done(0).
 
 +!done <-
     Time = system.time;
-    .print("done at: ", Time);
-   .stopMAS.
+    .println("done at: ", Time);
+    .stopMAS.

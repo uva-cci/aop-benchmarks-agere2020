@@ -77,9 +77,9 @@ def main(BASE, MAXAGENTSLOG, MAXMEETINGSLOG, REPETITIONS):
 	evaluation_file = open("../benchmark-sarl-%d-%d.csv" % (BASE**MAXAGENTSLOG, BASE**MAXMEETINGSLOG), "w")
 	evaluation_file.write("nbagents;nbmeetings;cpudata;total_time;internal_time\n")
 
-	for i in range(1, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
+	for i in range(3, MAXAGENTSLOG + 1, 1): # iterating over numbers of agents
 		nbagents = BASE**i
-		for j in range(1, MAXMEETINGSLOG + 1, 1): # iterating over numbers of tokens
+		for j in range(4, MAXMEETINGSLOG + 1, 1): # iterating over numbers of tokens
 			nbmeetings = BASE**j
 
 			for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
