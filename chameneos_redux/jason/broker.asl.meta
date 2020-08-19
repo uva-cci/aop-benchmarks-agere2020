@@ -49,4 +49,5 @@ done(0).
 
 +!done <-
     Time = system.time;
-    .print("done at: ", Time).
+    .print("done at: ", Time);
+    .stopMAS.
