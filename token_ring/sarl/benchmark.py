@@ -23,7 +23,7 @@ def run_test(nbagents, nbtokens, nbhops):
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	command = ["java", "-cp", SARLJAR_PATH+"/sarl_tokens.jar", "token_ring.Config", str(nbtokens), str(nbagents), str(nbhops)]
+	command = ["java", "-server", "-cp", SARLJAR_PATH+"/sarl_tokens.jar", "token_ring.Config", str(nbtokens), str(nbagents), str(nbhops)]
 	try:
 		output = subprocess.run(command, capture_output=True, timeout=60)
 		cpu_data = psutil.cpu_percent(interval=0, percpu=True)

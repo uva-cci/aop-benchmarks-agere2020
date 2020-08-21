@@ -23,7 +23,8 @@ def run_test(nbagents, nbmeetings):
 
 	start = time.time()
 	psutil.cpu_percent(interval=0, percpu=True)
-	command = ["java", "-cp", SCALAJAR_PATH +"/grounds_benchmarks.jar", "benchmark.Chameneos", str(nbmeetings), str(nbagents)]
+	#command = ["java", "-server", "-Xmx1024m", "-Xms1024m", "-Xss20m", "-cp", SCALAJAR_PATH +"/grounds_benchmarks.jar", "benchmark.Chameneos", str(nbmeetings), str(nbagents)]
+	command = ["java", "-server", "-cp", SCALAJAR_PATH +"/grounds_benchmarks.jar", "benchmark.Chameneos", str(nbmeetings), str(nbagents)]
 
 	print("command: %s" % (" ".join(command)))
 
