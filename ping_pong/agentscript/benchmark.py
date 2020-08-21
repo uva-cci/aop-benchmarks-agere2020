@@ -140,12 +140,12 @@ def main(BASE, MAXPINGERSLOG, MAXBALLSLOG, MAXDELAY, REPETITIONS):
 		nbpingers = BASE**i
 		for j in range(0, MAXBALLSLOG, 1): # iterating over numbers of tokens
 			nbballs = BASE**j
-			for z in range(1, MAXDELAY + 1, 1):  # iterating over numbers of tokens
-				delay = z
-				for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
-					generate_meta(nbpingers, nbballs, delay)
-					cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbpingers), str(nbballs), str(delay)), "input.json")
-					evaluation_file.write(str(nbpingers) + ";" + str(nbballs) + ";" + str(delay) + ";"  + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
+			#for z in range(1, MAXDELAY + 1, 1):  # iterating over numbers of tokens
+			delay = MAXDELAY
+			for w in range(REPETITIONS): # 10 executions to compute average and std_deviation
+				generate_meta(nbpingers, nbballs, delay)
+				cpudata, total_time, internal_time = run_test("M%s_B%s_D%s" % (str(nbpingers), str(nbballs), str(delay)), "input.json")
+				evaluation_file.write(str(nbpingers) + ";" + str(nbballs) + ";" + str(delay) + ";"  + str(cpudata) + ";" + str(total_time) + ";" + str(internal_time) + "\n")
 	
 	evaluation_file.close()
 
