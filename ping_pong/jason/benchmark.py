@@ -120,14 +120,14 @@ def run_test(path, filename):
 
 def main(BASE, MAXPINGERSLOG, MAXBALLSLOG, MAXDELAY, REPETITIONS):
 	evaluation_file = open(
-		"../benchmark-jason-%d-%d-%d.csv" % (BASE ** MAXMATCHESLOG, BASE ** MAXBALLSLOG, MAXDELAYLOG), "w")
+		"../benchmark-jason-%d-%d-%d.csv" % (BASE ** MAXPINGERSLOG, BASE ** MAXBALLSLOG, MAXDELAY), "w")
 	evaluation_file.write("nbpingers;nbballs;delay;cpudata;total_time;internal_time\n")
 
-	for i in range(0, MAXMATCHESLOG, 1):  # iterating over numbers of agents
+	for i in range(0, MAXPINGERSLOG, 1):  # iterating over numbers of agents
 		nbpingers = BASE ** i
 		for j in range(0, MAXBALLSLOG, 1):  # iterating over numbers of tokens
 			nbballs = BASE ** j
-			delay = MAXDELAYLOG
+			delay = MAXDELAY
 			for w in range(REPETITIONS):  # 10 executions to compute average and std_deviation
 				generate_meta(nbpingers, nbballs, delay)
 				cpudata, total_time, internal_time = run_test(
